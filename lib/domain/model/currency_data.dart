@@ -214,8 +214,8 @@ class ConversionRates {
     required this.ZWL,
   });
 
-  late final int KRW;
   late final double AED;
+  late final double KRW;
   late final double AFN;
   late final double ALL;
   late final double AMD;
