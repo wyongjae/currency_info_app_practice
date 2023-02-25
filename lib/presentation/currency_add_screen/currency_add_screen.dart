@@ -1,4 +1,4 @@
-import 'package:currency_info_app_prac/domain/model/currency_view_model.dart';
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,7 +7,7 @@ class CurrencyAddScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CurrencyViewModel>();
+    final viewModel = context.watch<CurrencyAddViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -34,12 +34,13 @@ class CurrencyAddScreen extends StatelessWidget {
                     Column(
                       children: const [
                         Text('마지막 업데이트 시간'),
-                        Text('마지막 업데이트 시간'),
                       ],
                     ),
                     const SizedBox(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        await viewModel.fetch();
+                      },
                       icon: const Icon(Icons.refresh),
                     )
                   ],
@@ -51,14 +52,18 @@ class CurrencyAddScreen extends StatelessWidget {
             height: 2,
             color: Colors.grey,
           ),
-          ListView(
-            shrinkWrap: true,
-            children: const [
-              ListTile(
-                title: Text('국가 이름'),
-                trailing: Text('환율'),
-              ),
-            ],
+          Expanded(
+            child: ListView.builder(
+              itemCount: viewModel.conversionRates.length,
+              itemBuilder: (BuildContext context, int index) {
+                final conversionRate = viewModel.conversionRates[index];
+
+                return ListTile(
+                  title: Text(conversionRate.nation),
+                  trailing: Text('${conversionRate.rate}'),
+                );
+              },
+            ),
           ),
         ],
       ),

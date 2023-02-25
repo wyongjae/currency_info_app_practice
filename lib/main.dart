@@ -1,6 +1,8 @@
-import 'package:currency_info_app_prac/data/exchange_rate_api.dart';
-import 'package:currency_info_app_prac/domain/model/currency_view_model.dart';
-import 'package:currency_info_app_prac/presentation/currency_screen.dart';
+import 'package:currency_info_app_prac/data/data_source/currency_api.dart';
+import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
+import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
+import 'package:currency_info_app_prac/presentation/currency_screen/currency_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +17,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => CurrencyViewModel(CurrencyApi())),
         ChangeNotifierProvider(
-            create: (_) => CurrencyViewModel(ExchangeRateApi())),
+            create: (_) =>
+                CurrencyAddViewModel(CurrencyRateRepository(CurrencyApi()))),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
