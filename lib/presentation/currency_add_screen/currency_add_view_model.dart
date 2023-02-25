@@ -183,11 +183,7 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  List<ExchangeRate> conversionRates = [];
-
-  void exchangeRate() {
-    conversionRates =
-        jsonData.entries.map((e) => ExchangeRate(e.key, e.value)).toList();
-    notifyListeners();
+  List<ExchangeRate> exchangeRate() {
+    return jsonData.entries.map((e) => ExchangeRate(e.key, e.value)).toList();
   }
 }
