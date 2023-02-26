@@ -17,10 +17,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CurrencyViewModel(CurrencyApi())),
         ChangeNotifierProvider(
-            create: (_) =>
-                CurrencyAddViewModel(CurrencyRateRepository(CurrencyApi()))),
+          create: (_) => CurrencyViewModel(
+            CurrencyRateRepository(CurrencyApi()),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => CurrencyAddViewModel(
+            CurrencyRateRepository(CurrencyApi()),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

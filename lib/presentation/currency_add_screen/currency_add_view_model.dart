@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +20,17 @@ class CurrencyAddViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  final jsonData = {
+  Future<int> lastUpdate() async {
+    final time = await repository.getData();
+    return time.timeLastUpdateUnix;
+  }
+
+  Future<int> nextUpdate() async {
+    final time = await repository.getData();
+    return time.timeNextUpdateUnix;
+  }
+
+  final conversionRateData = {
     "KRW": 1,
     "AED": 0.002806,
     "AFN": 0.06870,
@@ -183,7 +195,23 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
+  final List<ExchangeRate> _data = [];
+
+  List<ExchangeRate> get rateData => UnmodifiableListView(_data);
+
   List<ExchangeRate> exchangeRate() {
-    return jsonData.entries.map((e) => ExchangeRate(e.key, e.value)).toList();
+    return conversionRateData.entries
+        .map((e) => ExchangeRate(e.key, e.value))
+        .toList();
+  }
+
+  void addData(ExchangeRate conversionRate) {
+    _data.add(conversionRate);
+    notifyListeners();
+  }
+
+  void removeData(ExchangeRate conversionRate) {
+    _data.remove(conversionRate);
+    notifyListeners();
   }
 }

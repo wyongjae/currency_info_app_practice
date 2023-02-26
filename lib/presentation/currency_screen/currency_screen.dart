@@ -8,8 +8,7 @@ class CurrencyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CurrencyAddViewModel>();
-    List<ExchangeRate> conversionRates = viewModel.exchangeRate();
+    final addViewModel = context.watch<CurrencyAddViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -29,12 +28,13 @@ class CurrencyScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: 1,
+        itemCount: addViewModel.rateData.length,
         itemBuilder: (BuildContext context, int index) {
-          final conversionRate = conversionRates[index];
+          final conversionData = addViewModel.rateData[index];
 
-          return const ListTile(
-            title: Text('Add screen에서 받은 정보 표시'),
+          return ListTile(
+            title: Text(conversionData.nation),
+            trailing: Text('${conversionData.rate}'),
           );
         },
       ),

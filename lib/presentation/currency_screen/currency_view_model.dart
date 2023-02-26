@@ -1,21 +1,25 @@
 import 'dart:async';
 
-import 'package:currency_info_app_prac/data/data_source/currency_api.dart';
-import 'package:currency_info_app_prac/data/model/currency_data.dart';
+import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyViewModel with ChangeNotifier {
-  final CurrencyApi api;
+  CurrencyRateRepository repository;
 
-  CurrencyViewModel(this.api);
+  CurrencyViewModel(this.repository);
 
-  final _currencyStreamController = StreamController<Currency>.broadcast();
-
-  Stream<Currency> get currencyStream => _currencyStreamController.stream;
-
-  Future<void> fetchData() async {
-    final result = await api.fetch();
-    _currencyStreamController.add(result);
+  Future<void> getData() async {
+    await repository.getData();
     notifyListeners();
+  }
+
+  Future<int> lastUpdate() async {
+    final time = await repository.getData();
+    return time.timeLastUpdateUnix;
+  }
+
+  Future<int> nextUpdate() async {
+    final time = await repository.getData();
+    return time.timeNextUpdateUnix;
   }
 }
