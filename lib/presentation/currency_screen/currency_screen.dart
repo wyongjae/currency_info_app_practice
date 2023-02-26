@@ -28,9 +28,9 @@ class CurrencyScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: addViewModel.rateData.length,
+        itemCount: addViewModel.exchangeRateData.length,
         itemBuilder: (BuildContext context, int index) {
-          final conversionData = addViewModel.rateData[index];
+          final conversionData = addViewModel.exchangeRateData[index];
 
           return ListTile(
             title: Text(conversionData.nation),

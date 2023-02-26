@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:currency_info_app_prac/data/model/currency_data.dart';
 import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -15,19 +16,12 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   CurrencyAddViewModel(this.repository);
 
-  Future<void> fetch() async {
-    await repository.getData();
-    notifyListeners();
-  }
+  bool _isSelected = false;
 
-  Future<int> lastUpdate() async {
-    final time = await repository.getData();
-    return time.timeLastUpdateUnix;
-  }
+  bool get isSelected => _isSelected;
 
-  Future<int> nextUpdate() async {
-    final time = await repository.getData();
-    return time.timeNextUpdateUnix;
+  Future<Currency> fetch() async {
+    return await repository.getData();
   }
 
   final conversionRateData = {
@@ -197,7 +191,7 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   final List<ExchangeRate> _data = [];
 
-  List<ExchangeRate> get rateData => UnmodifiableListView(_data);
+  List<ExchangeRate> get exchangeRateData => UnmodifiableListView(_data);
 
   List<ExchangeRate> exchangeRate() {
     return conversionRateData.entries
@@ -213,5 +207,15 @@ class CurrencyAddViewModel with ChangeNotifier {
   void removeData(ExchangeRate conversionRate) {
     _data.remove(conversionRate);
     notifyListeners();
+  }
+
+  void selectedData(ExchangeRate conversionRateData) {
+    _isSelected = !_isSelected;
+
+    if (_isSelected) {
+      addData(conversionRateData);
+    } else {
+      removeData(conversionRateData);
+    }
   }
 }
