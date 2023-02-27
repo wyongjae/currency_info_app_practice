@@ -189,15 +189,30 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  final List<ExchangeRate> _data = [];
+  List<ExchangeRate> values = [];
 
-  List<ExchangeRate> get exchangeRateData => UnmodifiableListView(_data);
+  List<ExchangeRate> calculate() {
+    values = conversionRateData.entries
+        .map((e) => ExchangeRate(e.key, e.value))
+        .toList();
+    return values;
+  }
+
+  void calculator() {
+    return conversionRateData.values.toList().forEach((element) {
+      element * 1000;
+    });
+  }
 
   List<ExchangeRate> exchangeRate() {
     return conversionRateData.entries
         .map((e) => ExchangeRate(e.key, e.value))
         .toList();
   }
+
+  final List<ExchangeRate> _data = [];
+
+  List<ExchangeRate> get exchangeRateData => UnmodifiableListView(_data);
 
   void addData(ExchangeRate conversionRate) {
     _data.add(conversionRate);
@@ -209,13 +224,13 @@ class CurrencyAddViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void selectedData(ExchangeRate conversionRateData) {
+  void selectedData(ExchangeRate exchangeRateData) {
     _isSelected = !_isSelected;
 
     if (_isSelected) {
-      addData(conversionRateData);
+      addData(exchangeRateData);
     } else {
-      removeData(conversionRateData);
+      removeData(exchangeRateData);
     }
   }
 }

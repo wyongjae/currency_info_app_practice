@@ -19,10 +19,16 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
       appBar: AppBar(
         title: const Text('Currency Add Screen'),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add),
-          ),
+          FloatingActionButton(
+            elevation: 0.0,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Add',
+              style: TextStyle(fontSize: 18),
+            ),
+          )
         ],
       ),
       body: Column(
@@ -67,13 +73,6 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                         );
                       },
                     ),
-                    const SizedBox(),
-                    IconButton(
-                      onPressed: () async {
-                        await addViewModel.fetch();
-                      },
-                      icon: const Icon(Icons.refresh),
-                    )
                   ],
                 ),
               ),
@@ -96,7 +95,11 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                   child: Card(
                     child: ListTile(
                       title: Text(conversionRate.nation),
-                      trailing: Text('${conversionRate.rate}'),
+                      trailing: Column(
+                        children: [
+                          Text('${conversionRate.rate}'),
+                        ],
+                      ),
                     ),
                   ),
                 );

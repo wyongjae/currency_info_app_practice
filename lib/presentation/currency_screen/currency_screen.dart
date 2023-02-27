@@ -32,9 +32,14 @@ class CurrencyScreen extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           final conversionData = addViewModel.exchangeRateData[index];
 
-          return ListTile(
-            title: Text(conversionData.nation),
-            trailing: Text('${conversionData.rate}'),
+          return GestureDetector(
+            onTap: () {
+              addViewModel.removeData(conversionData);
+            },
+            child: ListTile(
+              title: Text(conversionData.nation),
+              trailing: Text('${conversionData.rate}'),
+            ),
           );
         },
       ),
