@@ -197,7 +197,11 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   bool get isSelected => _isSelected;
 
+  // exchangeRate 메써드의 conversion_rates data 리스트로 표시
   List<ExchangeRate> _data = [];
+  final List<ExchangeRate> _selectedData = [];
+
+  List<ExchangeRate> get selectedDate => _selectedData;
 
   List<ExchangeRate> get conversionRate => UnmodifiableListView(_data);
 
@@ -217,6 +221,7 @@ class CurrencyAddViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // conversionRateData 의 Map 형태를 List 형태로 변환
   void exchangeRate() {
     _data = conversionRateData.entries
         .map((e) => ExchangeRate(e.key, e.value, e.value * 1000))
@@ -224,13 +229,15 @@ class CurrencyAddViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // 선택한 data 를 리스트에 추가
   void addData(ExchangeRate conversionRate) {
-    _data.add(conversionRate);
+    _selectedData.add(conversionRate);
     notifyListeners();
   }
 
+  // 선택한 data 를 리스트에서 제거
   void removeData(ExchangeRate conversionRate) {
-    _data.remove(conversionRate);
+    _selectedData.remove(conversionRate);
     notifyListeners();
   }
 

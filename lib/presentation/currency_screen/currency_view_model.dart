@@ -5,7 +5,7 @@ import 'package:currency_info_app_prac/data/repository/currency_api_repository.d
 import 'package:flutter/material.dart';
 
 class CurrencyViewModel with ChangeNotifier {
-  CurrencyRateRepository repository;
+  final CurrencyRateRepository repository;
 
   CurrencyViewModel(this.repository);
 
