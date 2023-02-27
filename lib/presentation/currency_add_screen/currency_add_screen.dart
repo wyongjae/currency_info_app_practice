@@ -11,9 +11,15 @@ class CurrencyAddScreen extends StatefulWidget {
 
 class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final addViewModel = context.watch<CurrencyAddViewModel>();
+    addViewModel.fetch();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final addViewModel = context.watch<CurrencyAddViewModel>();
-    List<ExchangeRate> conversionRates = addViewModel.exchangeRate();
 
     return Scaffold(
       appBar: AppBar(
@@ -42,36 +48,24 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FutureBuilder(
-                      future: addViewModel.fetch(),
-                      builder: (BuildContext context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        final data = snapshot.data!;
-
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                const Text('Next Update :'),
-                                const SizedBox(width: 5),
-                                Text(data.timeNextUpdateUtc),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text('Last Update :'),
-                                const SizedBox(width: 5),
-                                Text(data.timeLastUpdateUtc),
-                              ],
-                            ),
+                            const Text('Next Update :'),
+                            const SizedBox(width: 5),
+                            Text(addViewModel.timeLastUpdateUtc),
                           ],
-                        );
-                      },
+                        ),
+                        Row(
+                          children: [
+                            const Text('Last Update :'),
+                            const SizedBox(width: 5),
+                            Text(addViewModel.timeLastUpdateUtc),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -84,9 +78,9 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: conversionRates.length,
+              itemCount: addViewModel.conversionRate.length,
               itemBuilder: (BuildContext context, int index) {
-                final conversionRate = conversionRates[index];
+                final conversionRate = addViewModel.conversionRate[index];
 
                 return GestureDetector(
                   onTap: () {
@@ -95,11 +89,7 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                   child: Card(
                     child: ListTile(
                       title: Text(conversionRate.nation),
-                      trailing: Column(
-                        children: [
-                          Text('${conversionRate.rate}'),
-                        ],
-                      ),
+                      trailing: Text('${conversionRate.rate}'),
                     ),
                   ),
                 );

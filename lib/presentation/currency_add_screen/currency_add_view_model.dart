@@ -7,23 +7,27 @@ import 'package:flutter/material.dart';
 class ExchangeRate {
   String nation;
   num rate;
+  num currency;
 
-  ExchangeRate(this.nation, this.rate);
+  ExchangeRate(this.nation, this.rate, this.currency);
+}
+
+class CurrencyAddState {
+  Currency? currency;
+  final bool isLoading;
+
+  CurrencyAddState(this.currency, this.isLoading);
+
+  CurrencyAddState copyWith({Currency? currency, bool? isLoading}) {
+    return CurrencyAddState(
+      currency ??= this.currency,
+      isLoading ??= this.isLoading,
+    );
+  }
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
   CurrencyRateRepository repository;
-
-  CurrencyAddViewModel(this.repository);
-
-  bool _isSelected = false;
-
-  bool get isSelected => _isSelected;
-
-  Future<Currency> fetch() async {
-    return await repository.getData();
-  }
-
   final conversionRateData = {
     "KRW": 1,
     "AED": 0.002806,
@@ -189,30 +193,36 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  List<ExchangeRate> values = [];
+  bool _isSelected = false;
 
-  List<ExchangeRate> calculate() {
-    values = conversionRateData.entries
-        .map((e) => ExchangeRate(e.key, e.value))
+  bool get isSelected => _isSelected;
+
+  List<ExchangeRate> _data = [];
+
+  List<ExchangeRate> get conversionRate => UnmodifiableListView(_data);
+
+  final CurrencyAddState _state = CurrencyAddState(null, false);
+
+  CurrencyAddState get state => _state;
+
+  String get timeLastUpdateUtc => _state.currency?.timeLastUpdateUtc ?? '';
+
+  String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
+
+  CurrencyAddViewModel(this.repository);
+
+  Future<void> fetch() async {
+    _state.currency = await repository.getData();
+    exchangeRate();
+    notifyListeners();
+  }
+
+  void exchangeRate() {
+    _data = conversionRateData.entries
+        .map((e) => ExchangeRate(e.key, e.value, e.value * 1000))
         .toList();
-    return values;
+    notifyListeners();
   }
-
-  void calculator() {
-    return conversionRateData.values.toList().forEach((element) {
-      element * 1000;
-    });
-  }
-
-  List<ExchangeRate> exchangeRate() {
-    return conversionRateData.entries
-        .map((e) => ExchangeRate(e.key, e.value))
-        .toList();
-  }
-
-  final List<ExchangeRate> _data = [];
-
-  List<ExchangeRate> get exchangeRateData => UnmodifiableListView(_data);
 
   void addData(ExchangeRate conversionRate) {
     _data.add(conversionRate);
