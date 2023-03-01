@@ -16,7 +16,7 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final addViewModel = context.read<CurrencyAddViewModel>();
       addViewModel.fetch();
-      addViewModel.exchangeRate();
+      addViewModel.conversionRate();
     });
   }
 
@@ -81,9 +81,9 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: addViewModel.conversionRate.length,
+              itemCount: addViewModel.conversionRates.length,
               itemBuilder: (BuildContext context, int index) {
-                final conversionRate = addViewModel.conversionRate[index];
+                final conversionRate = addViewModel.conversionRates[index];
 
                 return GestureDetector(
                   onTap: () {

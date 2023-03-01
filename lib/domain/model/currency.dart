@@ -13,7 +13,7 @@ class Currency {
 
   late final String result;
   late final String documentation;
-  late final String termsOfUse;
+  late final String? termsOfUse;
   late final int timeLastUpdateUnix;
   late final String timeLastUpdateUtc;
   late final int timeNextUpdateUnix;
