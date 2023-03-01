@@ -81,9 +81,10 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: addViewModel.conversionRates.length,
+              itemCount: addViewModel.state.conversionRates.length,
               itemBuilder: (BuildContext context, int index) {
-                final conversionRate = addViewModel.conversionRates[index];
+                final conversionRate =
+                    addViewModel.state.conversionRates[index];
 
                 return GestureDetector(
                   onTap: () {

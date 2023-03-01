@@ -7,6 +7,6 @@ class CurrencyRateRepository {
   CurrencyRateRepository(this.api);
 
   Future<Currency> getData() async {
-    return  api.fetch();
+    return api.fetch();
   }
 }

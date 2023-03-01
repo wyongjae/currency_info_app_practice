@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
 import 'package:currency_info_app_prac/domain/model/currency.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +13,23 @@ class ConversionRate {
 class CurrencyAddStates {
   Currency? currency;
   bool isSelected;
+  List<ConversionRate> conversionRates;
 
-  CurrencyAddStates(this.currency, this.isSelected);
+  CurrencyAddStates(
+    this.currency, {
+    required this.isSelected,
+    required this.conversionRates,
+  });
 
-  CurrencyAddStates copyWith({Currency? currency, bool? isSelected}) {
+  CurrencyAddStates copyWith({
+    Currency? currency,
+    bool? isSelected,
+    List<ConversionRate>? conversionRates,
+  }) {
     return CurrencyAddStates(
       currency ??= this.currency,
-      isSelected ??= this.isSelected,
+      isSelected: isSelected ??= this.isSelected,
+      conversionRates: conversionRates ??= this.conversionRates,
     );
   }
 }
@@ -30,7 +38,7 @@ class CurrencyAddViewModel with ChangeNotifier {
   CurrencyRateRepository repository;
 
   // conversion rate json data
-  final conversionRateData = {
+  static final _conversionRateData = {
     "KRW": 1,
     "AED": 0.002806,
     "AFN": 0.06870,
@@ -195,16 +203,19 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  // Map 형태의 conversionRatesData 를 리스트로 표시
-  List<ConversionRate> _data = [];
-
-  List<ConversionRate> get conversionRates => UnmodifiableListView(_data);
+  static final _conversionRates = _conversionRateData.entries
+      .map((e) => ConversionRate(e.key, e.value, e.value * 1000))
+      .toList();
 
   final List<ConversionRate> _addedData = [];
 
   List<ConversionRate> get addedData => _addedData;
 
-  final CurrencyAddStates _state = CurrencyAddStates(null, false);
+  final CurrencyAddStates _state = CurrencyAddStates(
+    null,
+    isSelected: false,
+    conversionRates: _conversionRates,
+  );
 
   CurrencyAddStates get state => _state;
 
@@ -222,7 +233,7 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   // conversionRateData 의 Map 형태를 List 형태로 변환
   void conversionRate() {
-    _data = conversionRateData.entries
+    _conversionRateData.entries
         .map((e) => ConversionRate(e.key, e.value, e.value * 1000))
         .toList();
     notifyListeners();
@@ -230,18 +241,18 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   // 선택한 data 를 리스트에 추가
   void addData(ConversionRate conversionRate) {
-    _addedData.add(conversionRate);
+    addedData.add(conversionRate);
     notifyListeners();
   }
 
   // 선택한 data 를 리스트에서 제거
   void removeData(ConversionRate conversionRate) {
-    _addedData.remove(conversionRate);
+    addedData.remove(conversionRate);
     notifyListeners();
   }
 
   void selectedData(ConversionRate conversionRate) {
-    _state.isSelected = !_state.isSelected;
+    state.isSelected = !state.isSelected;
 
     if (_state.isSelected) {
       addData(conversionRate);
