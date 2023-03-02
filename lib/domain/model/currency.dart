@@ -13,7 +13,7 @@ class Currency {
 
   late final String result;
   late final String documentation;
-  late final String? termsOfUse;
+  late final String termsOfUse;
   late final int timeLastUpdateUnix;
   late final String timeLastUpdateUtc;
   late final int timeNextUpdateUnix;
@@ -214,8 +214,8 @@ class ConversionRates {
     required this.ZWL,
   });
 
+  late final int KRW;
   late final num AED;
-  late final num KRW;
   late final num AFN;
   late final num ALL;
   late final num AMD;

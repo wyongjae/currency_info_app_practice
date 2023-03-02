@@ -16,7 +16,6 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final addViewModel = context.read<CurrencyAddViewModel>();
       addViewModel.fetch();
-      addViewModel.conversionRate();
     });
   }
 
@@ -53,6 +52,7 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                   children: [
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -65,7 +65,7 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
                           children: [
                             const Text('Last Update :'),
                             const SizedBox(width: 5),
-                            Text(addViewModel.timeLastUpdateUtc),
+                            Text(addViewModel.timeNextUpdateUtc),
                           ],
                         ),
                       ],

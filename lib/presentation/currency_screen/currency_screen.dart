@@ -28,9 +28,9 @@ class CurrencyScreen extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: addViewModel.addedData.length,
+        itemCount: addViewModel.state.addedData.length,
         itemBuilder: (BuildContext context, int index) {
-          final selectedData = addViewModel.addedData[index];
+          final selectedData = addViewModel.state.addedData[index];
 
           return GestureDetector(
             onTap: () {

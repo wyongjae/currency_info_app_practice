@@ -1,37 +1,22 @@
 import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
-import 'package:currency_info_app_prac/domain/model/currency.dart';
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_state.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ConversionRate {
-  String nation;
-  num rate;
-  num currency;
+part 'currency_add_view_model.freezed.dart';
 
-  ConversionRate(this.nation, this.rate, this.currency);
-}
+part 'currency_add_view_model.g.dart';
 
-class CurrencyAddStates {
-  Currency? currency;
-  bool isSelected;
-  List<ConversionRate> conversionRates;
+@freezed
+class ConversionRate with _$ConversionRate {
+  factory ConversionRate({
+    @Default('KRW') String nation,
+    @Default(1) num rate,
+    @Default(1000) num currency,
+  }) = _ConversionRate;
 
-  CurrencyAddStates(
-    this.currency, {
-    required this.isSelected,
-    required this.conversionRates,
-  });
-
-  CurrencyAddStates copyWith({
-    Currency? currency,
-    bool? isSelected,
-    List<ConversionRate>? conversionRates,
-  }) {
-    return CurrencyAddStates(
-      currency ??= this.currency,
-      isSelected: isSelected ??= this.isSelected,
-      conversionRates: conversionRates ??= this.conversionRates,
-    );
-  }
+  factory ConversionRate.fromJson(Map<String, dynamic> json) =>
+      _$ConversionRateFromJson(json);
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
@@ -204,20 +189,16 @@ class CurrencyAddViewModel with ChangeNotifier {
   };
 
   static final _conversionRates = _conversionRateData.entries
-      .map((e) => ConversionRate(e.key, e.value, e.value * 1000))
+      .map((e) => ConversionRate(
+            nation: e.key,
+            rate: e.value,
+            currency: e.value * 1000,
+          ))
       .toList();
 
-  final List<ConversionRate> _addedData = [];
+  var _state = CurrencyAddState();
 
-  List<ConversionRate> get addedData => _addedData;
-
-  final CurrencyAddStates _state = CurrencyAddStates(
-    null,
-    isSelected: false,
-    conversionRates: _conversionRates,
-  );
-
-  CurrencyAddStates get state => _state;
+  CurrencyAddState get state => _state;
 
   String get timeLastUpdateUtc => _state.currency?.timeLastUpdateUtc ?? '';
 
@@ -226,7 +207,11 @@ class CurrencyAddViewModel with ChangeNotifier {
   CurrencyAddViewModel(this.repository);
 
   Future<void> fetch() async {
-    _state.currency = await repository.getData();
+    _state = state.copyWith(
+      currency: await repository.getData(),
+      conversionRates: _conversionRates,
+    );
+
     conversionRate();
     notifyListeners();
   }
@@ -234,25 +219,28 @@ class CurrencyAddViewModel with ChangeNotifier {
   // conversionRateData 의 Map 형태를 List 형태로 변환
   void conversionRate() {
     _conversionRateData.entries
-        .map((e) => ConversionRate(e.key, e.value, e.value * 1000))
+        .map((e) => ConversionRate(
+              nation: e.key,
+              rate: e.value,
+              currency: e.value * 1000,
+            ))
         .toList();
-    notifyListeners();
   }
 
   // 선택한 data 를 리스트에 추가
   void addData(ConversionRate conversionRate) {
-    addedData.add(conversionRate);
+    state.addedData.add(conversionRate);
     notifyListeners();
   }
 
   // 선택한 data 를 리스트에서 제거
   void removeData(ConversionRate conversionRate) {
-    addedData.remove(conversionRate);
+    state.addedData.remove(conversionRate);
     notifyListeners();
   }
 
   void selectedData(ConversionRate conversionRate) {
-    state.isSelected = !state.isSelected;
+    _state = state.copyWith(isSelected: !state.isSelected);
 
     if (_state.isSelected) {
       addData(conversionRate);
