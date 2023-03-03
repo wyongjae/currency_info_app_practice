@@ -188,7 +188,7 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  static final _conversionRates = _conversionRateData.entries
+  final conversionRates = _conversionRateData.entries
       .map((e) => ConversionRate(
             nation: e.key,
             rate: e.value,
@@ -209,22 +209,10 @@ class CurrencyAddViewModel with ChangeNotifier {
   Future<void> fetch() async {
     _state = state.copyWith(
       currency: await repository.getData(),
-      conversionRates: _conversionRates,
+      conversionRates: conversionRates,
     );
 
-    conversionRate();
     notifyListeners();
-  }
-
-  // conversionRateData 의 Map 형태를 List 형태로 변환
-  void conversionRate() {
-    _conversionRateData.entries
-        .map((e) => ConversionRate(
-              nation: e.key,
-              rate: e.value,
-              currency: e.value * 1000,
-            ))
-        .toList();
   }
 
   // 선택한 data 를 리스트에 추가
