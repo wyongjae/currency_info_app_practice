@@ -192,7 +192,6 @@ class CurrencyAddViewModel with ChangeNotifier {
       .map((e) => ConversionRate(
             nation: e.key,
             rate: e.value,
-            currency: e.value * 1000,
           ))
       .toList();
 

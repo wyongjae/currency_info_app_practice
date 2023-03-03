@@ -14,6 +14,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   @override
   Widget build(BuildContext context) {
     final addViewModel = context.watch<CurrencyAddViewModel>();
+    var firstValue = addViewModel.conversionRates.first;
 
     return Scaffold(
       appBar: AppBar(
@@ -42,44 +43,46 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               color: Colors.cyan,
             ),
             const SizedBox(height: 20),
-            Stack(
-              children: [
-                Container(
-                  width: 250,
-                  height: 120,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.black,
+            Container(
+              width: 250,
+              height: 120,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: Colors.black,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(left: 15),
+                    width: 250,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 0.1,
+                        color: Colors.black,
+                      ),
+                    ),
+                    child: DropdownButton<ConversionRate>(
+                      value: firstValue,
+                      items: addViewModel.conversionRates
+                          .map<DropdownMenuItem<ConversionRate>>((value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value.nation),
+                        );
+                      }).toList(),
+                      onChanged: (ConversionRate? value) {
+                        setState(() {
+                          firstValue = value!;
+                        });
+                      },
                     ),
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 15),
-                  width: 250,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 0.5,
-                      color: Colors.black,
-                    ),
-                  ),
-                  child: DropdownButton(
-                    value: addViewModel.conversionRates.first,
-                    items: addViewModel.conversionRates.map((value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value.nation),
-                      );
-                    }).toList(),
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        value = value;
-                      });
-                    },
-                  ),
-                ),
-              ],
+                  const Text('Data 표시'),
+                ],
+              ),
             ),
           ],
         ),
