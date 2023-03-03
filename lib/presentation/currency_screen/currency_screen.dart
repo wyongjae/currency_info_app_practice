@@ -68,10 +68,12 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     )),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               width: 250,
-              height: 130,
+              height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
@@ -95,7 +97,12 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       });
                     },
                   ),
-                  Text(exchangeResult),
+                  Text(
+                    exchangeResult,
+                    style: const TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
                 ],
               ),
             ),
