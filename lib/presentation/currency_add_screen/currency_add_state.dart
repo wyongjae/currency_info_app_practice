@@ -3,6 +3,7 @@ import 'package:currency_info_app_prac/presentation/currency_add_screen/currency
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'currency_add_state.freezed.dart';
+
 part 'currency_add_state.g.dart';
 
 @freezed

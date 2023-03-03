@@ -1,4 +1,3 @@
-import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_screen.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +10,7 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
-  var exchangeResult = '';
+  String exchangeResult = '';
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -23,16 +22,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   @override
   Widget build(BuildContext context) {
     final addViewModel = context.watch<CurrencyAddViewModel>();
-    var firstValue = addViewModel.conversionRates.first.nation;
-
-    try {
-      int money = int.parse(_controller.text);
-
-      num exChangeMoney = money * (addViewModel.conversionRates[2].rate);
-      exchangeResult = exChangeMoney.toString();
-    } catch (e) {
-      print('Error : $e');
-    }
+    String _selectedValue = 'KRW';
 
     return Scaffold(
       appBar: AppBar(
@@ -40,14 +30,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CurrencyAddScreen(),
-                ),
-              );
+              setState(() {});
             },
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.refresh),
           )
         ],
       ),
@@ -60,9 +45,23 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               child: TextFormField(
                 controller: _controller,
                 keyboardType: TextInputType.number,
+                onChanged: (text) {
+                  try {
+                    double money = double.parse(_controller.text);
+
+                    double exchangeMoney =
+                        money * (addViewModel.conversionRates[0].rate);
+                    exchangeResult = exchangeMoney.toString();
+                  } catch (e) {
+                    'Error : $e';
+                  }
+                  setState(() {
+                    exchangeResult;
+                  });
+                },
                 decoration: const InputDecoration(
                     labelText: 'KRW',
-                    hintText: '금액을 입력하세요',
+                    hintText: '금액을 입력하세요.',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     )),
@@ -83,7 +82,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               child: Column(
                 children: [
                   DropdownButton<String>(
-                    value: firstValue,
+                    value: _selectedValue,
                     items: addViewModel.conversionRates
                         .map<DropdownMenuItem<String>>((value) {
                       return DropdownMenuItem(
@@ -93,7 +92,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     }).toList(),
                     onChanged: (String? value) {
                       setState(() {
-                        firstValue = value!;
+                        _selectedValue = value!;
                       });
                     },
                   ),

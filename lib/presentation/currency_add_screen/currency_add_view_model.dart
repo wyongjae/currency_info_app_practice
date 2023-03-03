@@ -193,18 +193,18 @@ class CurrencyAddViewModel with ChangeNotifier {
           ))
       .toList();
 
-  var _state = CurrencyAddState();
+  var _addState = CurrencyAddState();
 
-  CurrencyAddState get state => _state;
+  CurrencyAddState get addState => _addState;
 
-  String get timeLastUpdateUtc => _state.currency?.timeLastUpdateUtc ?? '';
+  String get timeLastUpdateUtc => _addState.currency?.timeLastUpdateUtc ?? '';
 
-  String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
+  String get timeNextUpdateUtc => _addState.currency?.timeNextUpdateUtc ?? '';
 
   CurrencyAddViewModel(this.repository);
 
   Future<void> fetch() async {
-    _state = state.copyWith(
+    _addState = addState.copyWith(
       currency: await repository.getData(),
       conversionRates: conversionRates,
     );
@@ -214,20 +214,20 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   // 선택한 data 를 리스트에 추가
   void addData(ConversionRate conversionRate) {
-    state.addedData.add(conversionRate);
+    addState.addedData.add(conversionRate);
     notifyListeners();
   }
 
   // 선택한 data 를 리스트에서 제거
   void removeData(ConversionRate conversionRate) {
-    state.addedData.remove(conversionRate);
+    addState.addedData.remove(conversionRate);
     notifyListeners();
   }
 
   void selectedData(ConversionRate conversionRate) {
-    _state = state.copyWith(isSelected: !state.isSelected);
+    _addState = addState.copyWith(isSelected: !addState.isSelected);
 
-    if (_state.isSelected) {
+    if (_addState.isSelected) {
       addData(conversionRate);
     } else {
       removeData(conversionRate);
