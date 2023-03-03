@@ -11,10 +11,28 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
+  var exchangeResult = '';
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final addViewModel = context.watch<CurrencyAddViewModel>();
-    var firstValue = addViewModel.conversionRates.first;
+    var firstValue = addViewModel.conversionRates.first.nation;
+
+    try {
+      int money = int.parse(_controller.text);
+
+      num exChangeMoney = money * (addViewModel.conversionRates[2].rate);
+      exchangeResult = exChangeMoney.toString();
+    } catch (e) {
+      print('Error : $e');
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -37,50 +55,47 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 250,
-              height: 120,
-              color: Colors.cyan,
+              child: TextFormField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                    labelText: 'KRW',
+                    hintText: '금액을 입력하세요',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    )),
+              ),
             ),
             const SizedBox(height: 20),
             Container(
               width: 250,
-              height: 120,
+              height: 130,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  width: 1,
                   color: Colors.black,
                 ),
               ),
               child: Column(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.only(left: 15),
-                    width: 250,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.1,
-                        color: Colors.black,
-                      ),
-                    ),
-                    child: DropdownButton<ConversionRate>(
-                      value: firstValue,
-                      items: addViewModel.conversionRates
-                          .map<DropdownMenuItem<ConversionRate>>((value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: Text(value.nation),
-                        );
-                      }).toList(),
-                      onChanged: (ConversionRate? value) {
-                        setState(() {
-                          firstValue = value!;
-                        });
-                      },
-                    ),
+                  DropdownButton<String>(
+                    value: firstValue,
+                    items: addViewModel.conversionRates
+                        .map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem(
+                        value: value.nation,
+                        child: Text(value.nation),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        firstValue = value!;
+                      });
+                    },
                   ),
-                  const Text('Data 표시'),
+                  Text(exchangeResult),
                 ],
               ),
             ),

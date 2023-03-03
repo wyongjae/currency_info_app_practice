@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'currency_add_view_model.freezed.dart';
-
 part 'currency_add_view_model.g.dart';
 
 @freezed
@@ -12,7 +11,6 @@ class ConversionRate with _$ConversionRate {
   factory ConversionRate({
     @Default('KRW') String nation,
     @Default(1) num rate,
-    @Default(1000) num currency,
   }) = _ConversionRate;
 
   factory ConversionRate.fromJson(Map<String, dynamic> json) =>
