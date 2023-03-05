@@ -10,8 +10,8 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
-  String exchangeResult = '';
   final TextEditingController _controller = TextEditingController();
+  String exchangeResult = '';
 
   @override
   void dispose() {
@@ -22,7 +22,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   @override
   Widget build(BuildContext context) {
     final addViewModel = context.watch<CurrencyAddViewModel>();
-    String _selectedValue = 'KRW';
 
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +49,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     double money = double.parse(_controller.text);
 
                     double exchangeMoney =
-                        money * (addViewModel.conversionRates[0].rate);
+                        money * (addViewModel.conversionRates[1].rate);
                     exchangeResult = exchangeMoney.toString();
                   } catch (e) {
                     'Error : $e';
@@ -72,7 +71,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             ),
             Container(
               width: 250,
-              height: 100,
+              height: 120,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
@@ -82,24 +81,25 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               child: Column(
                 children: [
                   DropdownButton<String>(
-                    value: _selectedValue,
-                    items: addViewModel.conversionRates
-                        .map<DropdownMenuItem<String>>((value) {
-                      return DropdownMenuItem(
+                    value: addViewModel.selectedValue,
+                    items: addViewModel.conversionRates.map((value) {
+                      return DropdownMenuItem<String>(
                         value: value.nation,
                         child: Text(value.nation),
                       );
                     }).toList(),
                     onChanged: (String? value) {
                       setState(() {
-                        _selectedValue = value!;
+                        addViewModel.selectedValue = value!;
                       });
                     },
                   ),
-                  Text(
-                    exchangeResult,
-                    style: const TextStyle(
-                      fontSize: 25,
+                  Flexible(
+                    child: Text(
+                      exchangeResult,
+                      style: const TextStyle(
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                 ],
