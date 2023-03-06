@@ -1,5 +1,6 @@
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_screen.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
+import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final addViewModel = context.watch<CurrencyAddViewModel>();
+    final viewModel = context.watch<CurrencyViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -54,7 +55,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     double money = double.parse(_controller.text);
 
                     double exchangeMoney =
-                        money * (addViewModel.conversionRates[1].rate);
+                        money * (viewModel.conversionRates[1].rate);
                     exchangeResult = exchangeMoney.toString();
                   } catch (e) {
                     'Error : $e';
@@ -86,15 +87,15 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               child: Column(
                 children: [
                   DropdownButton<ConversionRate>(
-                    value: addViewModel.selectedValue.conversionRates.first,
-                    items: addViewModel.conversionRates.map((value) {
+                    value: viewModel.state.conversionRate,
+                    items: viewModel.conversionRates.map((value) {
                       return DropdownMenuItem<ConversionRate>(
                         value: value,
                         child: Text(value.nation),
                       );
                     }).toList(),
                     onChanged: (ConversionRate? value) {
-                      setState(() {});
+                      viewModel.setNation(value!);
                     },
                   ),
                   Flexible(

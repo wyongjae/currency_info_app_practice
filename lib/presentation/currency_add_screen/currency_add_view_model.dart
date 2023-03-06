@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:currency_info_app_prac/data/repository/currency_repository_impl.dart';
+import 'package:currency_info_app_prac/domain/repository/currency_repository.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_state.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,10 +21,10 @@ class ConversionRate with _$ConversionRate {
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
-  CurrencyRepositoryImpl repository;
+  CurrencyRepository repository;
 
   // conversion rate json data
-  static final _conversionRateData = {
+  final _conversionRateData = {
     "KRW": 1,
     "AED": 0.002806,
     "AFN": 0.06870,
@@ -189,7 +189,7 @@ class CurrencyAddViewModel with ChangeNotifier {
     "ZWL": 0.6729
   };
 
-  var conversionRates = _conversionRateData.entries
+  List<ConversionRate> get conversionRates => _conversionRateData.entries
       .map((e) => ConversionRate(
             nation: e.key,
             rate: e.value,
@@ -203,9 +203,6 @@ class CurrencyAddViewModel with ChangeNotifier {
   String get timeLastUpdateUtc => _state.currency?.timeLastUpdateUtc ?? '';
 
   String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
-
-  CurrencyAddState get selectedValue =>
-      _state.copyWith(conversionRates: conversionRates);
 
   final List<ConversionRate> _addedData = [];
 

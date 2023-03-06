@@ -1,17 +1,14 @@
 import 'dart:convert';
 
 import 'package:currency_info_app_prac/data/data_source/currency_api.dart';
-import 'package:currency_info_app_prac/data/repository/currency_repository_impl.dart';
 import 'package:currency_info_app_prac/domain/model/currency.dart';
+import 'package:currency_info_app_prac/domain/repository/currency_repository.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../data/repository/currency_api_repository_test.dart';
-
 void main() {
   test('viewModel test', () async {
-    final viewModel =
-        CurrencyAddViewModel(MockCurrencyRepository(MockCurrencyApi()));
+    final viewModel = CurrencyAddViewModel(MockCurrencyRepository());
 
     await viewModel.fetch();
 
@@ -19,9 +16,7 @@ void main() {
   });
 }
 
-class MockCurrencyRepository extends CurrencyRepositoryImpl {
-  MockCurrencyRepository(super.api);
-
+class MockCurrencyRepository extends CurrencyRepository {
   @override
   Future<Currency> getData() async {
     return Currency.fromJson(jsonDecode(jsonData));
