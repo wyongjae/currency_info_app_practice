@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:currency_info_app_prac/data/repository/currency_api_repository_impl.dart';
+import 'package:currency_info_app_prac/data/repository/currency_repository_impl.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_state.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,7 +21,7 @@ class ConversionRate with _$ConversionRate {
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
-  CurrencyApiRepositoryImpl repository;
+  CurrencyRepositoryImpl repository;
 
   // conversion rate json data
   static final _conversionRateData = {

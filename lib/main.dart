@@ -1,5 +1,5 @@
 import 'package:currency_info_app_prac/data/data_source/currency_api.dart';
-import 'package:currency_info_app_prac/data/repository/currency_api_repository_impl.dart';
+import 'package:currency_info_app_prac/data/repository/currency_repository_impl.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_screen.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
@@ -19,12 +19,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => CurrencyViewModel(
-            CurrencyApiRepositoryImpl(CurrencyApi()),
+            CurrencyRepositoryImpl(CurrencyApi()),
           ),
         ),
         ChangeNotifierProvider(
           create: (_) => CurrencyAddViewModel(
-            CurrencyApiRepositoryImpl(CurrencyApi()),
+            CurrencyRepositoryImpl(CurrencyApi()),
           ),
         ),
       ],
