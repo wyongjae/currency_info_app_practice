@@ -197,4 +197,11 @@ class CurrencyViewModel with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void inputMoney(num money) {
+    _state = state.copyWith(
+      exchangeRate: money * state.conversionRate.rate,
+    );
+    notifyListeners();
+  }
 }

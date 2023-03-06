@@ -13,7 +13,6 @@ class CurrencyScreen extends StatefulWidget {
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
   final TextEditingController _controller = TextEditingController();
-  String exchangeResult = '';
 
   @override
   void dispose() {
@@ -51,18 +50,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 controller: _controller,
                 keyboardType: TextInputType.number,
                 onChanged: (text) {
-                  try {
-                    double money = double.parse(_controller.text);
-
-                    double exchangeMoney =
-                        money * (viewModel.conversionRates[1].rate);
-                    exchangeResult = exchangeMoney.toString();
-                  } catch (e) {
-                    'Error : $e';
-                  }
-                  setState(() {
-                    exchangeResult;
-                  });
+                  num money = num.parse(_controller.text);
+                  viewModel.inputMoney(money);
                 },
                 decoration: const InputDecoration(
                     labelText: 'KRW',
@@ -100,7 +89,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   ),
                   Flexible(
                     child: Text(
-                      exchangeResult,
+                      '${viewModel.state.exchangeRate}',
                       style: const TextStyle(
                         fontSize: 25,
                       ),
