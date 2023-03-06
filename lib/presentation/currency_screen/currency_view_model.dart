@@ -194,12 +194,14 @@ class CurrencyViewModel with ChangeNotifier {
   void setNation(ConversionRate conversionRate) {
     _state = state.copyWith(
       conversionRate: conversionRate,
+      exchangeRate: state.money * conversionRate.rate
     );
     notifyListeners();
   }
 
   void inputMoney(num money) {
     _state = state.copyWith(
+      money: money,
       exchangeRate: money * state.conversionRate.rate,
     );
     notifyListeners();
