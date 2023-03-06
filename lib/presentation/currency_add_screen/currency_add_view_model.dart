@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:currency_info_app_prac/data/repository/currency_api_repository.dart';
+import 'package:currency_info_app_prac/data/repository/currency_api_repository_impl.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_state.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,7 +21,7 @@ class ConversionRate with _$ConversionRate {
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
-  CurrencyRateRepository repository;
+  CurrencyApiRepositoryImpl repository;
 
   // conversion rate json data
   static final _conversionRateData = {
@@ -196,7 +196,6 @@ class CurrencyAddViewModel with ChangeNotifier {
           ))
       .toList();
 
-
   var _state = CurrencyAddState();
 
   CurrencyAddState get state => _state;
@@ -205,18 +204,12 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
 
-  String _selectedValue = '';
+  CurrencyAddState get selectedValue =>
+      _state.copyWith(conversionRates: conversionRates);
 
-  String get selectedValue => _selectedValue;
-
-  set selectedValue(String value) {
-    _selectedValue = value;
-    notifyListeners();
-  }
+  final List<ConversionRate> _addedData = [];
 
   CurrencyAddViewModel(this.repository);
-
-
 
   Future<void> fetch() async {
     _state = state.copyWith(
@@ -229,18 +222,27 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   // 선택한 data 를 리스트에 추가
   void addData(ConversionRate conversionRate) {
-    state.addedData.add(conversionRate);
+    _addedData.add(conversionRate);
+    _state = state.copyWith(
+      addedData: _addedData,
+    );
     notifyListeners();
   }
 
   // 선택한 data 를 리스트에서 제거
   void removeData(ConversionRate conversionRate) {
-    state.addedData.remove(conversionRate);
+    _addedData.remove(conversionRate);
+
+    _state = state.copyWith(
+      addedData: _addedData,
+    );
     notifyListeners();
   }
 
   void selectedData(ConversionRate conversionRate) {
-    _state = state.copyWith(isSelected: !state.isSelected);
+    _state = state.copyWith(
+      isSelected: !state.isSelected,
+    );
 
     if (_state.isSelected) {
       addData(conversionRate);

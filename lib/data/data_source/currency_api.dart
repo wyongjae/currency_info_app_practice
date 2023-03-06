@@ -22,7 +22,7 @@ const jsonData = '''{
  "base_code":"KRW",
  "conversion_rates":{
   "KRW":1,
-  "AED":0.002806,
+  "AED":0.002806, 
   "AFN":0.06870,
   "ALL":0.08377,
   "AMD":0.2991,

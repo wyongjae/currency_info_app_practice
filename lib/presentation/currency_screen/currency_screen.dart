@@ -1,3 +1,4 @@
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_screen.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,11 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              setState(() {});
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CurrencyAddScreen()),
+              );
             },
             icon: const Icon(Icons.refresh),
           )
@@ -80,18 +85,16 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               ),
               child: Column(
                 children: [
-                  DropdownButton<String>(
-                    value: addViewModel.selectedValue,
+                  DropdownButton<ConversionRate>(
+                    value: addViewModel.selectedValue.conversionRates.first,
                     items: addViewModel.conversionRates.map((value) {
-                      return DropdownMenuItem<String>(
-                        value: value.nation,
+                      return DropdownMenuItem<ConversionRate>(
+                        value: value,
                         child: Text(value.nation),
                       );
                     }).toList(),
-                    onChanged: (String? value) {
-                      setState(() {
-                        addViewModel.selectedValue = value!;
-                      });
+                    onChanged: (ConversionRate? value) {
+                      setState(() {});
                     },
                   ),
                   Flexible(

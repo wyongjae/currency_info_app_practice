@@ -8,8 +8,8 @@ part 'currency.g.dart';
 @freezed
 class Currency with _$Currency {
   factory Currency({
-    @Default('') String timeLastUpdateUtc,
-    @Default('') String timeNextUpdateUtc,
+    String? timeLastUpdateUtc,
+    String? timeNextUpdateUtc,
     ConversionRates? conversionRates,
   }) = _Currency;
 
