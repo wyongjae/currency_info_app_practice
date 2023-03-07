@@ -187,7 +187,7 @@ class CurrencyViewModel with ChangeNotifier {
 
   CurrencyViewModel(this.repository);
 
-  Future<Currency> getData() async {
+  Future<Currency> fetch() async {
     return await repository.getData();
   }
 

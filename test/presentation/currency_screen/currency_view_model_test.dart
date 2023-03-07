@@ -10,7 +10,7 @@ void main() {
   test('올바른 데이터를 가져와야 한다', () async {
     final viewModel = CurrencyViewModel(MockCurrencyRepository());
 
-    final result = await viewModel.getData();
+    final result = await viewModel.fetch();
 
     expect(result.timeLastUpdateUtc, 'Sat, 25 Feb 2023 00:00:02 +0000');
   });

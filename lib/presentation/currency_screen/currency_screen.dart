@@ -50,8 +50,12 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 controller: _controller,
                 keyboardType: TextInputType.number,
                 onChanged: (text) {
-                  num money = num.parse(_controller.text);
-                  viewModel.inputMoney(money);
+                  try {
+                    num money = num.parse(_controller.text);
+                    viewModel.inputMoney(money);
+                  } catch (e) {
+                    return;
+                  }
                 },
                 decoration: const InputDecoration(
                     labelText: 'KRW',
