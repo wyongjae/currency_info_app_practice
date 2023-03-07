@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:currency_info_app_prac/domain/model/currency.dart';
-import 'package:currency_info_app_prac/domain/repository/currency_repository.dart';
+import 'package:currency_info_app_prac/domain/use_case/get_currency_use_case.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_state.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_ui_event.dart';
@@ -9,7 +9,7 @@ import 'package:currency_info_app_prac/util/result.dart';
 import 'package:flutter/material.dart';
 
 class CurrencyViewModel with ChangeNotifier {
-  final CurrencyRepository repository;
+  final GetCurrencyUseCase getCurrencyUseCase;
 
   final _conversionRateData = {
     "KRW": 1,
@@ -191,12 +191,21 @@ class CurrencyViewModel with ChangeNotifier {
 
   Stream<CurrencyUiEvent> get eventStream => _eventStreamController.stream;
 
-  CurrencyViewModel(this.repository);
+  CurrencyViewModel(this.getCurrencyUseCase);
 
   // test code 에서 밖에 사용을 안 하고 있는 것 같음
-  // addViewModel 하고는 다르게 리턴값을 줘야하는 이유는?
+  // addViewModel 하고는 다르게 리턴값을 줘야하는 이유는 ?
   Future<Result<Currency>> fetch() async {
-    return await repository.getData();
+    final result = await getCurrencyUseCase();
+
+    return result.when(
+      success: (currency) {
+        return Result.success(currency);
+      },
+      error: (message) {
+        return Result.error(message);
+      },
+    );
   }
 
   // 여기서 conversionRate 와 money 의 값은 어떻게 전달이 되는 건지 ??

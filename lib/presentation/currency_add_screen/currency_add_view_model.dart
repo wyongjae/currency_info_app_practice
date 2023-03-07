@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:currency_info_app_prac/domain/repository/currency_repository.dart';
+import 'package:currency_info_app_prac/domain/use_case/get_currency_use_case.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_state.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,7 +21,7 @@ class ConversionRate with _$ConversionRate {
 }
 
 class CurrencyAddViewModel with ChangeNotifier {
-  CurrencyRepository repository;
+  final GetCurrencyUseCase getCurrencyUseCase;
 
   // conversion rate json data
   final _conversionRateData = {
@@ -198,6 +198,7 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   var _state = CurrencyAddState();
 
+  // state 를 use case 에 옮길 순 없을까
   CurrencyAddState get state => _state;
 
   String get timeLastUpdateUtc => _state.currency?.timeLastUpdateUtc ?? '';
@@ -206,10 +207,10 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   final List<ConversionRate> _addedData = [];
 
-  CurrencyAddViewModel(this.repository);
+  CurrencyAddViewModel(this.getCurrencyUseCase);
 
   Future<void> fetch() async {
-    final result = await repository.getData();
+    final result = await getCurrencyUseCase();
 
     result.when(
       success: (currency) {
