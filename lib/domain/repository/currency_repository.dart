@@ -1,5 +1,6 @@
 import 'package:currency_info_app_prac/domain/model/currency.dart';
+import 'package:currency_info_app_prac/util/result.dart';
 
 abstract class CurrencyRepository {
-  Future<Currency> getData();
+  Future<Result<Currency>> getData();
 }

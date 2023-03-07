@@ -1,13 +1,18 @@
 import 'dart:convert';
 
 import 'package:currency_info_app_prac/domain/model/currency.dart';
+import 'package:currency_info_app_prac/util/result.dart';
 
 class CurrencyApi {
-  Future<Currency> fetch() async {
-    Map<String, dynamic> jsonResponse = jsonDecode(jsonData);
-    Currency currency = Currency.fromJson(jsonResponse);
+  Future<Result<Currency>> fetch() async {
+    try {
+      Map<String, dynamic> jsonResponse = jsonDecode(jsonData);
+      Currency currency = Currency.fromJson(jsonResponse);
 
-    return currency;
+      return Result.success(currency);
+    } catch (message) {
+      return const Result.error('네트워크 에러');
+    }
   }
 }
 

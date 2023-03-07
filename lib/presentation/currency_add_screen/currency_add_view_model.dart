@@ -209,9 +209,16 @@ class CurrencyAddViewModel with ChangeNotifier {
   CurrencyAddViewModel(this.repository);
 
   Future<void> fetch() async {
-    _state = state.copyWith(
-      currency: await repository.getData(),
-      conversionRates: conversionRates,
+    final result = await repository.getData();
+
+    result.when(
+      success: (currency) {
+        _state = state.copyWith(
+          currency: currency,
+          conversionRates: conversionRates,
+        );
+      },
+      error: (message) {},
     );
 
     notifyListeners();
