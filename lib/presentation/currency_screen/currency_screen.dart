@@ -15,6 +15,15 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   final TextEditingController _controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final viewModel = context.read<CurrencyAddViewModel>();
+      viewModel.fetch();
+    });
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _controller.dispose();
@@ -44,12 +53,47 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: 45,
+                width: 500,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text('Next Update :'),
+                              const SizedBox(width: 5),
+                              Text(viewModel.timeLastUpdateUtc),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text('Last Update :'),
+                              const SizedBox(width: 5),
+                              Text(viewModel.timeNextUpdateUtc),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             SizedBox(
               width: 250,
               child: TextFormField(
                 controller: _controller,
                 keyboardType: TextInputType.number,
                 onChanged: (text) {
+                  // FormatException error 를 처리하기 위해서 작성
                   try {
                     num money = num.parse(_controller.text);
                     viewModel.inputMoney(money);

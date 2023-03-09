@@ -14,7 +14,7 @@ class Currency with _$Currency {
     @JsonKey(name: 'time_next_update_utc')
     @Default('0')
         String timeNextUpdateUtc,
-    @JsonKey(name: 'conversion_rate')
+    @JsonKey(name: 'conversion_rates')
     @Default(<String, dynamic>{})
         ConversionRates conversionRates,
   }) = _Currency;

@@ -13,10 +13,9 @@ void main() {
     final viewModel =
         CurrencyViewModel(GetCurrencyUseCase(MockCurrencyRepository()));
 
-    final result = await viewModel.fetch();
+    viewModel.fetch();
 
-    expect((result as Success<Currency>).data.timeLastUpdateUtc,
-        'Sat, 25 Feb 2023 00:00:02 +0000');
+    expect(viewModel.timeLastUpdateUtc, 'Sat, 25 Feb 2023 00:00:02 +0000');
   });
 }
 
