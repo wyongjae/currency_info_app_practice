@@ -20,6 +20,13 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<CurrencyViewModel>();
       viewModel.fetch();
+
+      viewModel.eventStream.listen((event) {
+        event.when(showSnackBar: (message) {
+          final snackBar = SnackBar(content: Text(message));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
+      });
     });
   }
 
@@ -55,7 +62,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: SizedBox(
-              height: 40,
+              height: 42,
               width: 500,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,9 +95,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             ),
           ),
           const Divider(
-            height: 1,
-            color: Colors.black38,
-            thickness: 1,
+            height: 2,
+            color: Colors.grey,
           ),
           const SizedBox(
             height: 180,
@@ -101,13 +107,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               controller: _controller,
               keyboardType: TextInputType.number,
               onChanged: (text) {
-                // FormatException error 를 처리하기 위해서 작성
-                try {
-                  num money = num.parse(_controller.text);
-                  viewModel.inputMoney(money);
-                } catch (e) {
-                  return;
-                }
+                viewModel.changeTextField(text);
               },
               decoration: const InputDecoration(
                   labelText: 'KRW',

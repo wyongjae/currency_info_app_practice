@@ -13,7 +13,7 @@ void main() {
     final viewModel =
         CurrencyViewModel(GetCurrencyUseCase(MockCurrencyRepository()));
 
-    viewModel.fetch();
+    await viewModel.fetch();
 
     expect(viewModel.timeLastUpdateUtc, 'Sat, 25 Feb 2023 00:00:02 +0000');
   });

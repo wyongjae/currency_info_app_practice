@@ -44,34 +44,35 @@ class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: SizedBox(
-              height: 45,
+              height: 42,
               width: 500,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Text('Next Update :'),
-                            const SizedBox(width: 5),
-                            Text(addViewModel.timeLastUpdateUtc),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Text('Last Update :'),
-                            const SizedBox(width: 5),
-                            Text(addViewModel.timeNextUpdateUtc),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text('Next Update :'),
+                          const SizedBox(width: 5),
+                          Text(addViewModel.timeLastUpdateUtc),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          const Text('Last Update :'),
+                          const SizedBox(width: 5),
+                          Text(addViewModel.timeNextUpdateUtc),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

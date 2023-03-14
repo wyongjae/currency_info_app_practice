@@ -42,7 +42,7 @@ class CurrencyAddViewModel with ChangeNotifier {
 
   CurrencyAddViewModel(this.getCurrencyUseCase);
 
-  void fetch() async {
+  Future<void> fetch() async {
     final result = await getCurrencyUseCase();
 
     result.when(

@@ -30,9 +30,11 @@ class CurrencyViewModel with ChangeNotifier {
 
   Stream<CurrencyUiEvent> get eventStream => _eventStreamController.stream;
 
+  num _money = 0;
+
   CurrencyViewModel(this.getCurrencyUseCase);
 
-  void fetch() async {
+  Future<void> fetch() async {
     final result = await getCurrencyUseCase();
 
     result.when(
@@ -51,16 +53,26 @@ class CurrencyViewModel with ChangeNotifier {
   void setNation(ConversionRate conversionRate) {
     _state = state.copyWith(
       conversionRate: conversionRate,
-      exchangeRate: state.money * conversionRate.rate,
+      exchangeRate: _money * conversionRate.rate,
     );
     notifyListeners();
   }
 
   void inputMoney(num money) {
+    _money = money;
     _state = state.copyWith(
-      money: money,
-      exchangeRate: money * state.conversionRate.rate,
+      exchangeRate: _money * state.conversionRate.rate,
     );
     notifyListeners();
+  }
+
+  void changeTextField(String text) {
+    try {
+      num money = num.parse(text);
+      inputMoney(money);
+    } catch (e) {
+      _eventStreamController
+          .add(const CurrencyUiEvent.showSnackBar('형식이 안 맞습니다'));
+    }
   }
 }
