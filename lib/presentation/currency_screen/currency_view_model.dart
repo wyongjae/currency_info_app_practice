@@ -58,7 +58,7 @@ class CurrencyViewModel with ChangeNotifier {
 
   void inputMoney(num money) {
     _state = state.copyWith(
-      money: money, // 없어도 되는 것 ??
+      money: money,
       exchangeRate: money * state.conversionRate.rate,
     );
     notifyListeners();

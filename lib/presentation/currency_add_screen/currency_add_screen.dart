@@ -11,8 +11,8 @@ class CurrencyAddScreen extends StatefulWidget {
 
 class _CurrencyAddScreenState extends State<CurrencyAddScreen> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final addViewModel = context.read<CurrencyAddViewModel>();
       addViewModel.fetch();

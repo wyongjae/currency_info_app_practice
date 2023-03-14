@@ -15,7 +15,8 @@ void main() {
 
     viewModel.fetch();
 
-    expect(viewModel.timeLastUpdateUtc, 'Sat, 25 Feb 2023 00:00:02 +0000');
+    expect(viewModel.state.currency?.timeLastUpdateUtc,
+        'Sat, 25 Feb 2023 00:00:02 +0000');
   });
 }
 

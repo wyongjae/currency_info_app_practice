@@ -18,7 +18,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final viewModel = context.read<CurrencyAddViewModel>();
+      final viewModel = context.read<CurrencyViewModel>();
       viewModel.fetch();
     });
   }
@@ -49,105 +49,112 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           )
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SizedBox(
-                height: 45,
-                width: 500,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: SizedBox(
+              height: 40,
+              width: 500,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              const Text('Next Update :'),
-                              const SizedBox(width: 5),
-                              Text(viewModel.timeLastUpdateUtc),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text('Last Update :'),
-                              const SizedBox(width: 5),
-                              Text(viewModel.timeNextUpdateUtc),
-                            ],
-                          ),
+                          const Text('Next Update :'),
+                          const SizedBox(width: 5),
+                          Text(viewModel.timeLastUpdateUtc),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: [
+                          const Text('Last Update :'),
+                          const SizedBox(width: 5),
+                          Text(viewModel.timeNextUpdateUtc),
                         ],
                       ),
                     ],
                   ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 250,
-              child: TextFormField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                onChanged: (text) {
-                  // FormatException error 를 처리하기 위해서 작성
-                  try {
-                    num money = num.parse(_controller.text);
-                    viewModel.inputMoney(money);
-                  } catch (e) {
-                    return;
-                  }
-                },
-                decoration: const InputDecoration(
-                    labelText: 'KRW',
-                    hintText: '금액을 입력하세요.',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    )),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: 250,
-              height: 120,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: Colors.black,
-                ),
-              ),
-              child: Column(
-                children: [
-                  DropdownButton<ConversionRate>(
-                    value: viewModel.state.conversionRate,
-                    items: viewModel.conversionRates.map((value) {
-                      return DropdownMenuItem<ConversionRate>(
-                        value: value,
-                        child: Text(value.nation),
-                      );
-                    }).toList(),
-                    onChanged: (ConversionRate? value) {
-                      viewModel.setNation(value!);
-                    },
-                  ),
-                  Flexible(
-                    child: Text(
-                      '${viewModel.state.exchangeRate}',
-                      style: const TextStyle(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          const Divider(
+            height: 1,
+            color: Colors.black38,
+            thickness: 1,
+          ),
+          const SizedBox(
+            height: 180,
+          ),
+          SizedBox(
+            width: 250,
+            child: TextFormField(
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              onChanged: (text) {
+                // FormatException error 를 처리하기 위해서 작성
+                try {
+                  num money = num.parse(_controller.text);
+                  viewModel.inputMoney(money);
+                } catch (e) {
+                  return;
+                }
+              },
+              decoration: const InputDecoration(
+                  labelText: 'KRW',
+                  hintText: '금액을 입력하세요.',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  )),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            width: 250,
+            height: 120,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.black,
+              ),
+            ),
+            child: Column(
+              children: [
+                DropdownButton<ConversionRate>(
+                  value: viewModel.state.conversionRate,
+                  items: viewModel.conversionRates.map((value) {
+                    return DropdownMenuItem<ConversionRate>(
+                      value: value,
+                      child: Text(value.nation),
+                    );
+                  }).toList(),
+                  onChanged: (ConversionRate? value) {
+                    viewModel.setNation(value!);
+                  },
+                ),
+                Flexible(
+                  child: Text(
+                    '${viewModel.state.exchangeRate}',
+                    style: const TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
