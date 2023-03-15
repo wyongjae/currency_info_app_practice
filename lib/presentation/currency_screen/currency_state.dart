@@ -10,6 +10,7 @@ part 'currency_state.g.dart';
 class CurrencyState with _$CurrencyState {
   factory CurrencyState({
     required ConversionRate conversionRate,
+    required ConversionRate conversionRate2,
     @Default(0) num exchangeRate,
     Currency? currency,
     @Default([]) List<ConversionRate> conversionRates,

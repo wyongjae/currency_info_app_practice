@@ -18,7 +18,10 @@ class CurrencyViewModel with ChangeNotifier {
           .toList() ??
       [];
 
-  CurrencyState _state = CurrencyState(conversionRate: ConversionRate());
+  CurrencyState _state = CurrencyState(
+    conversionRate: ConversionRate(),
+    conversionRate2: ConversionRate(),
+  );
 
   CurrencyState get state => _state;
 
@@ -58,6 +61,14 @@ class CurrencyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void setNation2(ConversionRate conversionRate) {
+    _state = state.copyWith(
+      conversionRate2: conversionRate,
+      exchangeRate: _money * conversionRate.rate,
+    );
+    notifyListeners();
+  }
+
   void inputMoney(num money) {
     _money = money;
     _state = state.copyWith(
@@ -71,8 +82,7 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       inputMoney(money);
     } catch (e) {
-      _eventStreamController
-          .add(const CurrencyUiEvent.showSnackBar('형식이 안 맞습니다'));
+      return;
     }
   }
 }

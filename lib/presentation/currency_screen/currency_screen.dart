@@ -11,7 +11,8 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller1 = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
 
   @override
   void initState() {
@@ -19,20 +20,14 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<CurrencyViewModel>();
       viewModel.fetch();
-
-      viewModel.eventStream.listen((event) {
-        event.when(showSnackBar: (message) {
-          final snackBar = SnackBar(content: Text(message));
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        });
-      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _controller.dispose();
+    _controller1.dispose();
+    _controller2.dispose();
   }
 
   @override
@@ -101,19 +96,20 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             color: Colors.grey,
           ),
           const SizedBox(
-            height: 180,
+            height: 210,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
                 width: 150,
-                height: 60,
+                height: 55,
                 decoration: BoxDecoration(
-                    border: Border.all(
-                  width: 2,
-                  color: Colors.black45,
-                )),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black45,
+                  ),
+                ),
                 child: ElevatedButton(
                   onPressed: () {
                     viewModel.fetch();
@@ -132,18 +128,25 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                 final conversionRate =
                                     viewModel.state.conversionRates[index];
 
-                                return Card(
-                                  child: InkWell(
-                                    splashColor: Colors.black38,
-                                    onTap: () {
-                                      viewModel.setNation(conversionRate);
-                                      Navigator.pop(context);
-                                    },
-                                    child: ListTile(
-                                      title: Text(conversionRate.nation),
-                                      trailing: Text('${conversionRate.rate}'),
+                                return Column(
+                                  children: [
+                                    const Divider(
+                                      height: 1,
+                                      thickness: 1,
                                     ),
-                                  ),
+                                    InkWell(
+                                      splashColor: Colors.black38,
+                                      onTap: () {
+                                        viewModel.setNation(conversionRate);
+                                        Navigator.pop(context);
+                                      },
+                                      child: ListTile(
+                                        title: Text(conversionRate.nation),
+                                        trailing:
+                                            Text('${conversionRate.rate}'),
+                                      ),
+                                    ),
+                                  ],
                                 );
                               },
                             ),
@@ -168,11 +171,128 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   ),
                 ),
               ),
-              Flexible(
-                child: Text(
-                  '${viewModel.state.exchangeRate}',
-                  style: const TextStyle(
-                    fontSize: 25,
+              Container(
+                width: 200,
+                height: 55,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black45,
+                  ),
+                ),
+                child: TextFormField(
+                  style: const TextStyle(fontSize: 20),
+                  controller: _controller1,
+                  keyboardType: TextInputType.number,
+                  onChanged: (text) {
+                    viewModel.changeTextField(text);
+                  },
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    border: InputBorder.none,
+                    hintText: '금액을 입력하세요',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: 150,
+                height: 55,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black45,
+                  ),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // 데이터를 바로 표시하기 위해 fetch 를 2번 실행
+                    viewModel.fetch();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        viewModel.fetch();
+                        return AlertDialog(
+                          title: const Text('검색창'),
+                          content: SizedBox(
+                            width: double.maxFinite,
+                            height: 400,
+                            child: ListView.builder(
+                              itemCount: viewModel.state.conversionRates.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final conversionRate =
+                                    viewModel.state.conversionRates[index];
+
+                                return Column(
+                                  children: [
+                                    const Divider(
+                                      height: 1,
+                                      thickness: 1,
+                                    ),
+                                    InkWell(
+                                      splashColor: Colors.black38,
+                                      onTap: () {
+                                        viewModel.setNation2(conversionRate);
+                                        Navigator.pop(context);
+                                      },
+                                      child: ListTile(
+                                        title: Text(conversionRate.nation),
+                                        trailing:
+                                            Text('${conversionRate.rate}'),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    foregroundColor: Colors.black87,
+                    backgroundColor: Colors.white,
+                    elevation: 0.0,
+                  ),
+                  child: Text(
+                    viewModel.state.conversionRate2.nation,
+                    style: const TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                width: 200,
+                height: 55,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black45,
+                  ),
+                ),
+                child: TextFormField(
+                  style: const TextStyle(fontSize: 20),
+                  controller: _controller2,
+                  keyboardType: TextInputType.number,
+                  onChanged: (text) {
+                    viewModel.changeTextField(text);
+                  },
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    border: InputBorder.none,
+                    hintText: '금액을 입력하세요',
                   ),
                 ),
               ),
