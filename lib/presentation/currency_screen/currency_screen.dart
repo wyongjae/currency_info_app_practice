@@ -1,5 +1,4 @@
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_screen.dart';
-import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +41,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Currency Screen'),
+        backgroundColor: Colors.black54,
+        title: const Text('환율 계산기'),
+        elevation: 1,
         actions: [
           IconButton(
             onPressed: () {
@@ -95,64 +96,87 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             ),
           ),
           const Divider(
-            height: 2,
+            height: 1,
+            thickness: 1,
             color: Colors.grey,
           ),
           const SizedBox(
             height: 180,
           ),
-          SizedBox(
-            width: 250,
-            child: TextFormField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              onChanged: (text) {
-                viewModel.changeTextField(text);
-              },
-              decoration: const InputDecoration(
-                  labelText: 'KRW',
-                  hintText: '금액을 입력하세요.',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  )),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: 250,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.black,
-              ),
-            ),
-            child: Column(
-              children: [
-                DropdownButton<ConversionRate>(
-                  value: viewModel.state.conversionRate,
-                  items: viewModel.conversionRates.map((value) {
-                    return DropdownMenuItem<ConversionRate>(
-                      value: value,
-                      child: Text(value.nation),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                width: 150,
+                height: 60,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                  width: 2,
+                  color: Colors.black45,
+                )),
+                child: ElevatedButton(
+                  onPressed: () {
+                    viewModel.fetch();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        viewModel.fetch();
+                        return AlertDialog(
+                          title: const Text('검색창'),
+                          content: SizedBox(
+                            width: double.maxFinite,
+                            height: 400,
+                            child: ListView.builder(
+                              itemCount: viewModel.state.conversionRates.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final conversionRate =
+                                    viewModel.state.conversionRates[index];
+
+                                return Card(
+                                  child: InkWell(
+                                    splashColor: Colors.black38,
+                                    onTap: () {
+                                      viewModel.setNation(conversionRate);
+                                      Navigator.pop(context);
+                                    },
+                                    child: ListTile(
+                                      title: Text(conversionRate.nation),
+                                      trailing: Text('${conversionRate.rate}'),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     );
-                  }).toList(),
-                  onChanged: (ConversionRate? value) {
-                    viewModel.setNation(value!);
                   },
-                ),
-                Flexible(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    foregroundColor: Colors.black87,
+                    backgroundColor: Colors.white,
+                    elevation: 0.0,
+                  ),
                   child: Text(
-                    '${viewModel.state.exchangeRate}',
+                    viewModel.state.conversionRate.nation,
                     style: const TextStyle(
-                      fontSize: 25,
+                      fontSize: 24,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Flexible(
+                child: Text(
+                  '${viewModel.state.exchangeRate}',
+                  style: const TextStyle(
+                    fontSize: 25,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
