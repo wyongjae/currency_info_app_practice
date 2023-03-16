@@ -185,7 +185,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   controller: _controller1,
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
-                    viewModel.changeTextField(text);
+                    // 반대로 했을 때는 작동이 안 되는데 무슨 차이 ??
+                    _controller2.text = text;
+                    viewModel.changeFirstTextField(text);
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
@@ -239,7 +241,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                     InkWell(
                                       splashColor: Colors.black38,
                                       onTap: () {
-                                        viewModel.setNation2(conversionRate);
+                                        viewModel.setNation2(
+                                          conversionRate,
+                                          _controller2.text,
+                                        );
                                         Navigator.pop(context);
                                       },
                                       child: ListTile(
@@ -287,7 +292,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   controller: _controller2,
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
-                    viewModel.changeTextField(text);
+                    _controller1.text = text;
+                    viewModel.changeSecondTextField(text);
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
@@ -297,6 +303,44 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Flexible(
+            child: Text(
+              '${viewModel.state.exchangeRate}',
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              '${viewModel.state.conversionRate}',
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Flexible(
+            child: Text(
+              '${viewModel.state.exchangeRate2}',
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
+          Flexible(
+            child: Text(
+              '${viewModel.state.conversionRate2}',
+              style: const TextStyle(
+                fontSize: 25,
+              ),
+            ),
           ),
         ],
       ),

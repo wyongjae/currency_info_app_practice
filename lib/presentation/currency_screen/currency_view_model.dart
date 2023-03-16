@@ -53,6 +53,7 @@ class CurrencyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  // 여기서는 money 를 따로 안 받아도 되는 건가 ?
   void setNation(ConversionRate conversionRate) {
     _state = state.copyWith(
       conversionRate: conversionRate,
@@ -61,26 +62,36 @@ class CurrencyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setNation2(ConversionRate conversionRate) {
+  void setNation2(ConversionRate conversionRate, String text) {
     _state = state.copyWith(
       conversionRate2: conversionRate,
-      exchangeRate: _money * conversionRate.rate,
+      exchangeRate2: _money * conversionRate.rate,
     );
+    text = state.exchangeRate2.toString();
     notifyListeners();
   }
 
-  void inputMoney(num money) {
-    _money = money;
-    _state = state.copyWith(
-      exchangeRate: _money * state.conversionRate.rate,
-    );
-    notifyListeners();
-  }
-
-  void changeTextField(String text) {
+  void changeFirstTextField(String text) {
     try {
       num money = num.parse(text);
-      inputMoney(money);
+      _money = money;
+      _state = state.copyWith(
+        exchangeRate: _money * state.conversionRate.rate,
+      );
+      notifyListeners();
+    } catch (e) {
+      return;
+    }
+  }
+
+  void changeSecondTextField(String text) {
+    try {
+      num money = num.parse(text);
+      _money = money;
+      _state = state.copyWith(
+        exchangeRate2: _money * state.conversionRate2.rate,
+      );
+      notifyListeners();
     } catch (e) {
       return;
     }

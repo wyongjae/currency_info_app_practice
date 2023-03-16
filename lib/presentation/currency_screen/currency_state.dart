@@ -12,6 +12,7 @@ class CurrencyState with _$CurrencyState {
     required ConversionRate conversionRate,
     required ConversionRate conversionRate2,
     @Default(0) num exchangeRate,
+    @Default(0) num exchangeRate2,
     Currency? currency,
     @Default([]) List<ConversionRate> conversionRates,
   }) = _CurrencyState;
