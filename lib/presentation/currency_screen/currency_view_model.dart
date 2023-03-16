@@ -62,12 +62,11 @@ class CurrencyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void setNation2(ConversionRate conversionRate, String text) {
+  void setNation2(ConversionRate conversionRate) {
     _state = state.copyWith(
       conversionRate2: conversionRate,
       exchangeRate2: _money * conversionRate.rate,
     );
-    text = state.exchangeRate2.toString();
     notifyListeners();
   }
 
@@ -76,7 +75,7 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       _money = money;
       _state = state.copyWith(
-        exchangeRate: _money * state.conversionRate.rate,
+        exchangeRate: _money * state.conversionRate2.rate,
       );
       notifyListeners();
     } catch (e) {
@@ -89,11 +88,23 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       _money = money;
       _state = state.copyWith(
-        exchangeRate2: _money * state.conversionRate2.rate,
+        exchangeRate2: _money * state.conversionRate.rate,
       );
       notifyListeners();
     } catch (e) {
       return;
     }
+  }
+
+  void searchNation(String text) {
+    if (text.isEmpty) {
+      _state = state.copyWith(conversionRates: conversionRates);
+    }
+    _state = state.copyWith(
+        conversionRates: conversionRates
+            .where((e) =>
+                e.nation.toUpperCase().contains(text) ||
+                e.nation.toLowerCase().contains(text))
+            .toList());
   }
 }

@@ -13,6 +13,7 @@ class CurrencyScreen extends StatefulWidget {
 class _CurrencyScreenState extends State<CurrencyScreen> {
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -96,7 +97,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             color: Colors.grey,
           ),
           const SizedBox(
-            height: 210,
+            height: 230,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,7 +119,12 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       builder: (BuildContext context) {
                         viewModel.fetch();
                         return AlertDialog(
-                          title: const Text('검색창'),
+                          title: TextField(
+                            controller: _searchController,
+                            decoration: const InputDecoration(
+                              hintText: '검색어를 입력하세요',
+                            ),
+                          ),
                           content: SizedBox(
                             width: double.maxFinite,
                             height: 400,
@@ -138,6 +144,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                       splashColor: Colors.black38,
                                       onTap: () {
                                         viewModel.setNation(conversionRate);
+                                        _controller1.text = viewModel
+                                            .state.exchangeRate
+                                            .toString();
                                         Navigator.pop(context);
                                       },
                                       child: ListTile(
@@ -185,9 +194,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   controller: _controller1,
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
-                    // 반대로 했을 때는 작동이 안 되는데 무슨 차이 ??
-                    _controller2.text = text;
                     viewModel.changeFirstTextField(text);
+                    _controller2.text = viewModel.state.exchangeRate.toString();
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
@@ -241,10 +249,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                     InkWell(
                                       splashColor: Colors.black38,
                                       onTap: () {
-                                        viewModel.setNation2(
-                                          conversionRate,
-                                          _controller2.text,
-                                        );
+                                        viewModel.setNation2(conversionRate);
+                                        _controller2.text = viewModel
+                                            .state.exchangeRate2
+                                            .toString();
                                         Navigator.pop(context);
                                       },
                                       child: ListTile(
@@ -292,8 +300,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   controller: _controller2,
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
-                    _controller1.text = text;
                     viewModel.changeSecondTextField(text);
+                    _controller1.text =
+                        viewModel.state.exchangeRate2.toString();
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
@@ -303,44 +312,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Flexible(
-            child: Text(
-              '${viewModel.state.exchangeRate}',
-              style: const TextStyle(
-                fontSize: 25,
-              ),
-            ),
-          ),
-          Flexible(
-            child: Text(
-              '${viewModel.state.conversionRate}',
-              style: const TextStyle(
-                fontSize: 25,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Flexible(
-            child: Text(
-              '${viewModel.state.exchangeRate2}',
-              style: const TextStyle(
-                fontSize: 25,
-              ),
-            ),
-          ),
-          Flexible(
-            child: Text(
-              '${viewModel.state.conversionRate2}',
-              style: const TextStyle(
-                fontSize: 25,
-              ),
-            ),
           ),
         ],
       ),
