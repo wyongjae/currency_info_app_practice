@@ -21,23 +21,23 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
       final viewModel = context.read<CurrencyViewModel>();
       viewModel.fetch();
 
-      // _searchController.addListener(() {
-      //   return viewModel.searchNation(_searchController.text);
-      // });
+      _searchController.addListener(() {
+        return viewModel.searchNation(_searchController.text);
+      });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
-    // final viewModel = context.read<CurrencyViewModel>();
+    final viewModel = context.read<CurrencyViewModel>();
 
     _controller1.dispose();
     _controller2.dispose();
-    // _searchController.removeListener(() {
-    //   return viewModel.searchNation(_searchController.text);
-    // });
-    // _searchController.dispose();
+    _searchController.removeListener(() {
+      return viewModel.searchNation(_searchController.text);
+    });
+    _searchController.dispose();
   }
 
   @override
@@ -122,8 +122,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                               hintText: '검색어를 입력하세요',
                             ),
                             onChanged: (text) {
-                              // _searchController.text = text;
-                              // viewModel.searchNation(text);
+                              viewModel.searchNation(_searchController.text);
                             },
                           ),
                           content: SizedBox(

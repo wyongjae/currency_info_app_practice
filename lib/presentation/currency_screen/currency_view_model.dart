@@ -105,8 +105,8 @@ class CurrencyViewModel with ChangeNotifier {
     final nations = _state = state.copyWith(
         conversionRates: conversionRates
             .where((e) =>
-                e.nation.toUpperCase().contains(text) ||
-                e.nation.toLowerCase().contains(text))
+                e.nation.contains(text.toUpperCase()) ||
+                e.nation.contains(text.toLowerCase()))
             .toList());
     searchNations.add(nations.conversionRate);
     notifyListeners();
