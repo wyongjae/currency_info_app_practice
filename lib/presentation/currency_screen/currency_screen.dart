@@ -1,4 +1,3 @@
-import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_screen.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,14 +20,24 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<CurrencyViewModel>();
       viewModel.fetch();
+
+      // _searchController.addListener(() {
+      //   return viewModel.searchNation(_searchController.text);
+      // });
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+    // final viewModel = context.read<CurrencyViewModel>();
+
     _controller1.dispose();
     _controller2.dispose();
+    // _searchController.removeListener(() {
+    //   return viewModel.searchNation(_searchController.text);
+    // });
+    // _searchController.dispose();
   }
 
   @override
@@ -40,18 +49,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         backgroundColor: Colors.black54,
         title: const Text('환율 계산기'),
         elevation: 1,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const CurrencyAddScreen()),
-              );
-            },
-            icon: const Icon(Icons.refresh),
-          )
-        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -124,6 +121,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                             decoration: const InputDecoration(
                               hintText: '검색어를 입력하세요',
                             ),
+                            onChanged: (text) {
+                              // _searchController.text = text;
+                              // viewModel.searchNation(text);
+                            },
                           ),
                           content: SizedBox(
                             width: double.maxFinite,
