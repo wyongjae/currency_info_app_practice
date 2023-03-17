@@ -19,10 +19,21 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<CurrencyViewModel>();
-      viewModel.fetch();
 
       _searchController.addListener(() {
         return viewModel.searchNation(_searchController.text);
+      });
+
+      viewModel.eventStream.listen((event) {
+        event.when(
+          showSnackBar: (message) {},
+          changeFirstMoney: (money) {
+            _controller1.text = money.toString();
+          },
+          changeSecondMoney: (money) {
+            _controller2.text = money.toString();
+          },
+        );
       });
     });
   }
@@ -110,11 +121,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    viewModel.fetch();
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        viewModel.fetch();
                         return AlertDialog(
                           title: TextField(
                             controller: _searchController,
@@ -170,7 +179,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     elevation: 0.0,
                   ),
                   child: Text(
-                    viewModel.state.conversionRate.nation,
+                    viewModel.state.firstButtonConversionRate.nation,
                     style: const TextStyle(
                       fontSize: 24,
                     ),
@@ -192,7 +201,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
                     viewModel.changeFirstTextField(text);
-                    _controller2.text = viewModel.state.exchangeRate.toString();
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),
@@ -220,12 +228,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    // 데이터를 바로 표시하기 위해 fetch 를 2번 실행
-                    viewModel.fetch();
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        viewModel.fetch();
                         return AlertDialog(
                           title: const Text('검색창'),
                           content: SizedBox(
@@ -247,9 +252,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                       splashColor: Colors.black38,
                                       onTap: () {
                                         viewModel.setNation2(conversionRate);
-                                        _controller2.text = viewModel
-                                            .state.exchangeRate2
-                                            .toString();
                                         Navigator.pop(context);
                                       },
                                       child: ListTile(
@@ -276,7 +278,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     elevation: 0.0,
                   ),
                   child: Text(
-                    viewModel.state.conversionRate2.nation,
+                    viewModel.state.secondButtonConversionRate.nation,
                     style: const TextStyle(
                       fontSize: 24,
                     ),
@@ -298,8 +300,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   keyboardType: TextInputType.number,
                   onChanged: (text) {
                     viewModel.changeSecondTextField(text);
-                    _controller1.text =
-                        viewModel.state.exchangeRate2.toString();
                   },
                   decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(10),

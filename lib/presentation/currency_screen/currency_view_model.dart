@@ -19,8 +19,8 @@ class CurrencyViewModel with ChangeNotifier {
       [];
 
   CurrencyState _state = CurrencyState(
-    conversionRate: ConversionRate(),
-    conversionRate2: ConversionRate(),
+    firstButtonConversionRate: ConversionRate(),
+    secondButtonConversionRate: ConversionRate(),
   );
 
   CurrencyState get state => _state;
@@ -33,9 +33,9 @@ class CurrencyViewModel with ChangeNotifier {
 
   Stream<CurrencyUiEvent> get eventStream => _eventStreamController.stream;
 
-  num _money = 0;
-
-  CurrencyViewModel(this.getCurrencyUseCase);
+  CurrencyViewModel(this.getCurrencyUseCase) {
+    fetch();
+  }
 
   Future<void> fetch() async {
     final result = await getCurrencyUseCase();
@@ -44,7 +44,12 @@ class CurrencyViewModel with ChangeNotifier {
       success: (currency) {
         _state = state.copyWith(
           currency: currency,
-          conversionRates: conversionRates,
+          conversionRates: currency.conversionRates.entries
+              .map((e) => ConversionRate(
+                    nation: e.key,
+                    rate: e.value,
+                  ))
+              .toList(),
         );
       },
       error: (message) {},
@@ -56,29 +61,38 @@ class CurrencyViewModel with ChangeNotifier {
   // 여기서는 money 를 따로 안 받아도 되는 건가 ?
   void setNation(ConversionRate conversionRate) {
     _state = state.copyWith(
-      conversionRate: conversionRate,
-      exchangeRate: _money * conversionRate.rate,
+      firstButtonConversionRate: conversionRate,
+      secondFieldMoney: state.firstFieldMoney *
+          (state.secondButtonConversionRate.rate /
+              state.firstButtonConversionRate.rate),
     );
     notifyListeners();
+    _eventStreamController
+        .add(CurrencyUiEvent.changeSecondMoney(state.secondFieldMoney));
   }
 
   void setNation2(ConversionRate conversionRate) {
     _state = state.copyWith(
-      conversionRate2: conversionRate,
-      exchangeRate2: _money * conversionRate.rate,
+      secondButtonConversionRate: conversionRate,
+      secondFieldMoney: state.firstFieldMoney * conversionRate.rate,
     );
     notifyListeners();
+    _eventStreamController
+        .add(CurrencyUiEvent.changeSecondMoney(state.secondFieldMoney));
   }
 
   void changeFirstTextField(String text) {
     try {
       num money = num.parse(text);
-      _money = money;
       _state = state.copyWith(
-        exchangeRate:
-            _money * (state.conversionRate2.rate / state.conversionRate.rate),
+        firstFieldMoney: money,
+        secondFieldMoney: money *
+            (state.secondButtonConversionRate.rate /
+                state.firstButtonConversionRate.rate),
       );
       notifyListeners();
+      _eventStreamController
+          .add(CurrencyUiEvent.changeSecondMoney(state.secondFieldMoney));
     } catch (e) {
       return;
     }
@@ -87,12 +101,15 @@ class CurrencyViewModel with ChangeNotifier {
   void changeSecondTextField(String text) {
     try {
       num money = num.parse(text);
-      _money = money;
       _state = state.copyWith(
-        exchangeRate2:
-            _money * (state.conversionRate.rate / state.conversionRate2.rate),
+        firstFieldMoney: money *
+            (state.firstButtonConversionRate.rate /
+                state.secondButtonConversionRate.rate),
+        secondFieldMoney: money,
       );
       notifyListeners();
+      _eventStreamController
+          .add(CurrencyUiEvent.changeFirstMoney(state.firstFieldMoney));
     } catch (e) {
       return;
     }

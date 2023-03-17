@@ -9,10 +9,10 @@ part 'currency_state.g.dart';
 @freezed
 class CurrencyState with _$CurrencyState {
   factory CurrencyState({
-    required ConversionRate conversionRate,
-    required ConversionRate conversionRate2,
-    @Default(0) num exchangeRate,
-    @Default(0) num exchangeRate2,
+    required ConversionRate firstButtonConversionRate,
+    required ConversionRate secondButtonConversionRate,
+    @Default(0) num firstFieldMoney,
+    @Default(0) num secondFieldMoney,
     Currency? currency,
     @Default([]) List<ConversionRate> conversionRates,
   }) = _CurrencyState;
