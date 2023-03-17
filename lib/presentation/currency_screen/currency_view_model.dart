@@ -35,8 +35,6 @@ class CurrencyViewModel with ChangeNotifier {
 
   num _money = 0;
 
-  List<ConversionRate> searchNations = [];
-
   CurrencyViewModel(this.getCurrencyUseCase);
 
   Future<void> fetch() async {
@@ -77,7 +75,8 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       _money = money;
       _state = state.copyWith(
-        exchangeRate: _money * state.conversionRate2.rate,
+        exchangeRate:
+            _money * (state.conversionRate2.rate / state.conversionRate.rate),
       );
       notifyListeners();
     } catch (e) {
@@ -90,7 +89,8 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       _money = money;
       _state = state.copyWith(
-        exchangeRate2: _money / state.conversionRate2.rate,
+        exchangeRate2:
+            _money * (state.conversionRate.rate / state.conversionRate2.rate),
       );
       notifyListeners();
     } catch (e) {
@@ -101,14 +101,15 @@ class CurrencyViewModel with ChangeNotifier {
   void searchNation(String text) {
     if (text.isEmpty) {
       _state = state.copyWith(conversionRates: conversionRates);
+      notifyListeners();
+    } else if (text.isNotEmpty) {
+      _state = state.copyWith(
+          conversionRates: conversionRates
+              .where((e) =>
+                  e.nation.contains(text.toUpperCase()) ||
+                  e.nation.contains(text.toLowerCase()))
+              .toList());
+      notifyListeners();
     }
-    final nations = _state = state.copyWith(
-        conversionRates: conversionRates
-            .where((e) =>
-                e.nation.contains(text.toUpperCase()) ||
-                e.nation.contains(text.toLowerCase()))
-            .toList());
-    searchNations.add(nations.conversionRate);
-    notifyListeners();
   }
 }
