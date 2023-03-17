@@ -90,7 +90,7 @@ class CurrencyViewModel with ChangeNotifier {
       num money = num.parse(text);
       _money = money;
       _state = state.copyWith(
-        exchangeRate2: _money * state.conversionRate.rate,
+        exchangeRate2: _money / state.conversionRate2.rate,
       );
       notifyListeners();
     } catch (e) {
