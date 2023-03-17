@@ -144,9 +144,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                       splashColor: Colors.black38,
                                       onTap: () {
                                         viewModel.setNation(conversionRate);
-                                        _controller1.text = viewModel
-                                            .state.exchangeRate
-                                            .toString();
                                         Navigator.pop(context);
                                       },
                                       child: ListTile(
