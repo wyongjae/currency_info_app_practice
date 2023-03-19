@@ -58,15 +58,14 @@ class CurrencyViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  // 여기서는 money 를 따로 안 받아도 되는 건가 ?
   void setNation(ConversionRate conversionRate) {
     _state = state.copyWith(
       firstButtonConversionRate: conversionRate,
       secondFieldMoney: state.firstFieldMoney *
-          (state.secondButtonConversionRate.rate /
-              state.firstButtonConversionRate.rate),
+          (state.secondButtonConversionRate.rate / conversionRate.rate),
     );
     notifyListeners();
+
     _eventStreamController
         .add(CurrencyUiEvent.changeSecondMoney(state.secondFieldMoney));
   }
@@ -74,9 +73,11 @@ class CurrencyViewModel with ChangeNotifier {
   void setNation2(ConversionRate conversionRate) {
     _state = state.copyWith(
       secondButtonConversionRate: conversionRate,
-      secondFieldMoney: state.firstFieldMoney * conversionRate.rate,
+      secondFieldMoney: state.firstFieldMoney *
+          (conversionRate.rate / state.firstButtonConversionRate.rate),
     );
     notifyListeners();
+
     _eventStreamController
         .add(CurrencyUiEvent.changeSecondMoney(state.secondFieldMoney));
   }
