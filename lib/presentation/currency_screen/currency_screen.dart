@@ -35,6 +35,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           },
         );
       });
+
+      viewModel.foundNation = viewModel.state.conversionRates;
     });
   }
 
@@ -45,10 +47,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
 
     _controller1.dispose();
     _controller2.dispose();
+    _searchController.dispose();
     _searchController.removeListener(() {
       return viewModel.searchNation(_searchController.text);
     });
-    _searchController.dispose();
   }
 
   @override
@@ -131,17 +133,17 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                               hintText: '검색어를 입력하세요',
                             ),
                             onChanged: (text) {
-                              viewModel.searchNation(_searchController.text);
+                              viewModel.searchNation(text);
                             },
                           ),
                           content: SizedBox(
                             width: double.maxFinite,
                             height: 400,
                             child: ListView.builder(
-                              itemCount: viewModel.state.conversionRates.length,
+                              itemCount: viewModel.foundNation.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final conversionRate =
-                                    viewModel.state.conversionRates[index];
+                                    viewModel.foundNation[index];
 
                                 return Column(
                                   children: [

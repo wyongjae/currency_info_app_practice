@@ -10,13 +10,14 @@ class CurrencyViewModel with ChangeNotifier {
   final GetCurrencyUseCase getCurrencyUseCase;
 
   List<ConversionRate> get conversionRates =>
-      state.currency?.conversionRates.entries
+      state.currency!.conversionRates.entries
           .map((e) => ConversionRate(
                 nation: e.key,
                 rate: e.value,
               ))
-          .toList() ??
-      [];
+          .toList();
+
+  List<ConversionRate> foundNation = [];
 
   CurrencyState _state = CurrencyState(
     firstButtonConversionRate: ConversionRate(),
@@ -117,17 +118,19 @@ class CurrencyViewModel with ChangeNotifier {
   }
 
   void searchNation(String text) {
+    List<ConversionRate> result = [];
+
     if (text.isEmpty) {
-      _state = state.copyWith(conversionRates: conversionRates);
-      notifyListeners();
+      result = state.conversionRates;
     } else if (text.isNotEmpty) {
-      _state = state.copyWith(
-          conversionRates: conversionRates
-              .where((e) =>
-                  e.nation.contains(text.toUpperCase()) ||
-                  e.nation.contains(text.toLowerCase()))
-              .toList());
+      result = state.conversionRates
+          .where((e) =>
+              e.nation.contains(text.toUpperCase()) ||
+              e.nation.contains(text.toLowerCase()))
+          .toList();
       notifyListeners();
     }
+    foundNation = result;
+    notifyListeners();
   }
 }
