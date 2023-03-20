@@ -10,6 +10,9 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
+  final FocusNode _focusNode1 = FocusNode();
+  final FocusNode _focusNode2 = FocusNode();
+
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -19,10 +22,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = context.read<CurrencyViewModel>();
-
-      _searchController.addListener(() {
-        return viewModel.searchNation(_searchController.text);
-      });
 
       viewModel.eventStream.listen((event) {
         event.when(
@@ -36,7 +35,18 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         );
       });
 
+      // 변경된 값을 실시간으로 알려주기 위해 작성했으나 용도가 틀린 것 같음
+      _searchController.addListener(() {
+        return viewModel.searchNation(_searchController.text);
+      });
+
       viewModel.foundNation = viewModel.state.conversionRates;
+    });
+
+    _focusNode1.addListener(() {
+      if (!_focusNode1.hasFocus) {
+        FocusScope.of(context).requestFocus(_focusNode1);
+      }
     });
   }
 
@@ -56,6 +66,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<CurrencyViewModel>();
+    final state = viewModel.state;
 
     return Scaffold(
       appBar: AppBar(
@@ -107,7 +118,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
             color: Colors.grey,
           ),
           const SizedBox(
-            height: 230,
+            height: 200,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -128,6 +139,8 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: TextField(
+                            focusNode: _focusNode1,
+                            autofocus: true,
                             controller: _searchController,
                             decoration: const InputDecoration(
                               hintText: '검색어를 입력하세요',
@@ -181,7 +194,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     elevation: 0.0,
                   ),
                   child: Text(
-                    viewModel.state.firstButtonConversionRate.nation,
+                    state.firstButtonConversionRate.nation,
                     style: const TextStyle(
                       fontSize: 24,
                     ),
@@ -239,10 +252,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                             width: double.maxFinite,
                             height: 400,
                             child: ListView.builder(
-                              itemCount: viewModel.state.conversionRates.length,
+                              itemCount: state.conversionRates.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final conversionRate =
-                                    viewModel.state.conversionRates[index];
+                                    state.conversionRates[index];
 
                                 return Column(
                                   children: [
@@ -280,7 +293,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                     elevation: 0.0,
                   ),
                   child: Text(
-                    viewModel.state.secondButtonConversionRate.nation,
+                    state.secondButtonConversionRate.nation,
                     style: const TextStyle(
                       fontSize: 24,
                     ),
@@ -297,6 +310,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   ),
                 ),
                 child: TextFormField(
+                  focusNode: _focusNode2,
                   style: const TextStyle(fontSize: 20),
                   controller: _controller2,
                   keyboardType: TextInputType.number,
@@ -311,6 +325,33 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 28.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text('2023년 3월 17일 기준 환율'),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Text('1 ${state.firstButtonConversionRate.nation}'),
+                        Text(' = ${viewModel.pairConversion}'.substring(0, 8)),
+                        Text(' ${state.secondButtonConversionRate.nation}'),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ],
       ),
