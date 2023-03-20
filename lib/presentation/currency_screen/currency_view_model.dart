@@ -30,9 +30,8 @@ class CurrencyViewModel with ChangeNotifier {
 
   String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
 
-  num get pairConversion =>
-      _state.firstButtonConversionRate.rate /
-      _state.secondButtonConversionRate.rate;
+  num get pairConversion => (state.secondButtonConversionRate.rate /
+      state.firstButtonConversionRate.rate);
 
   final _eventStreamController = StreamController<CurrencyUiEvent>();
 

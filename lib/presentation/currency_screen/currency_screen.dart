@@ -10,9 +10,6 @@ class CurrencyScreen extends StatefulWidget {
 }
 
 class _CurrencyScreenState extends State<CurrencyScreen> {
-  final FocusNode _focusNode1 = FocusNode();
-  final FocusNode _focusNode2 = FocusNode();
-
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
@@ -42,12 +39,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
 
       viewModel.foundNation = viewModel.state.conversionRates;
     });
-
-    _focusNode1.addListener(() {
-      if (!_focusNode1.hasFocus) {
-        FocusScope.of(context).requestFocus(_focusNode1);
-      }
-    });
   }
 
   @override
@@ -74,286 +65,281 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         title: const Text('환율 계산기'),
         elevation: 1,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SizedBox(
-              height: 42,
-              width: 500,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: 42,
+                width: 500,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Text('Next Update :'),
+                            const SizedBox(width: 5),
+                            Text(viewModel.timeLastUpdateUtc),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            const Text('Last Update :'),
+                            const SizedBox(width: 5),
+                            Text(viewModel.timeNextUpdateUtc),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.grey,
+            ),
+            const SizedBox(
+              height: 200,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 150,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: TextField(
+                              controller: _searchController,
+                              decoration: const InputDecoration(
+                                hintText: '검색어를 입력하세요',
+                              ),
+                              onChanged: (text) {
+                                viewModel.searchNation(text);
+                              },
+                            ),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              height: 400,
+                              child: ListView.builder(
+                                itemCount: viewModel.foundNation.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final conversionRate =
+                                      viewModel.foundNation[index];
+
+                                  return Column(
+                                    children: [
+                                      const Divider(
+                                        height: 1,
+                                        thickness: 1,
+                                      ),
+                                      InkWell(
+                                        splashColor: Colors.black38,
+                                        onTap: () {
+                                          viewModel.setNation(conversionRate);
+                                          Navigator.pop(context);
+                                        },
+                                        child: ListTile(
+                                          title: Text(conversionRate.nation),
+                                          trailing:
+                                              Text('${conversionRate.rate}'),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      foregroundColor: Colors.black87,
+                      backgroundColor: Colors.white,
+                      elevation: 0.0,
+                    ),
+                    child: Text(
+                      state.firstButtonConversionRate.nation,
+                      style: const TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 200,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    controller: _controller1,
+                    keyboardType: TextInputType.number,
+                    onChanged: (text) {
+                      viewModel.changeFirstTextField(text);
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      border: InputBorder.none,
+                      hintText: '금액을 입력하세요',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 150,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('검색창'),
+                            content: SizedBox(
+                              width: double.maxFinite,
+                              height: 400,
+                              child: ListView.builder(
+                                itemCount: state.conversionRates.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final conversionRate =
+                                      state.conversionRates[index];
+
+                                  return Column(
+                                    children: [
+                                      const Divider(
+                                        height: 1,
+                                        thickness: 1,
+                                      ),
+                                      InkWell(
+                                        splashColor: Colors.black38,
+                                        onTap: () {
+                                          viewModel.setNation2(conversionRate);
+                                          Navigator.pop(context);
+                                        },
+                                        child: ListTile(
+                                          title: Text(conversionRate.nation),
+                                          trailing:
+                                              Text('${conversionRate.rate}'),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      foregroundColor: Colors.black87,
+                      backgroundColor: Colors.white,
+                      elevation: 0.0,
+                    ),
+                    child: Text(
+                      state.secondButtonConversionRate.nation,
+                      style: const TextStyle(
+                        fontSize: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 200,
+                  height: 55,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
+                    controller: _controller2,
+                    keyboardType: TextInputType.number,
+                    onChanged: (text) {
+                      viewModel.changeSecondTextField(text);
+                    },
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      border: InputBorder.none,
+                      hintText: '금액을 입력하세요',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 28.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const Text('2023년 3월 17일 기준 환율'),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Row(
-                        children: [
-                          const Text('Next Update :'),
-                          const SizedBox(width: 5),
-                          Text(viewModel.timeLastUpdateUtc),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          const Text('Last Update :'),
-                          const SizedBox(width: 5),
-                          Text(viewModel.timeNextUpdateUtc),
-                        ],
-                      ),
+                      Text('1 ${state.firstButtonConversionRate.nation}'),
+                      Text(' = ${viewModel.pairConversion}'),
+                      Text(' ${state.secondButtonConversionRate.nation}'),
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-          const Divider(
-            height: 1,
-            thickness: 1,
-            color: Colors.grey,
-          ),
-          const SizedBox(
-            height: 200,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 150,
-                height: 55,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.black45,
-                  ),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: TextField(
-                            focusNode: _focusNode1,
-                            autofocus: true,
-                            controller: _searchController,
-                            decoration: const InputDecoration(
-                              hintText: '검색어를 입력하세요',
-                            ),
-                            onChanged: (text) {
-                              viewModel.searchNation(text);
-                            },
-                          ),
-                          content: SizedBox(
-                            width: double.maxFinite,
-                            height: 400,
-                            child: ListView.builder(
-                              itemCount: viewModel.foundNation.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final conversionRate =
-                                    viewModel.foundNation[index];
-
-                                return Column(
-                                  children: [
-                                    const Divider(
-                                      height: 1,
-                                      thickness: 1,
-                                    ),
-                                    InkWell(
-                                      splashColor: Colors.black38,
-                                      onTap: () {
-                                        viewModel.setNation(conversionRate);
-                                        Navigator.pop(context);
-                                      },
-                                      child: ListTile(
-                                        title: Text(conversionRate.nation),
-                                        trailing:
-                                            Text('${conversionRate.rate}'),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    foregroundColor: Colors.black87,
-                    backgroundColor: Colors.white,
-                    elevation: 0.0,
-                  ),
-                  child: Text(
-                    state.firstButtonConversionRate.nation,
-                    style: const TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 200,
-                height: 55,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.black45,
-                  ),
-                ),
-                child: TextFormField(
-                  style: const TextStyle(fontSize: 20),
-                  controller: _controller1,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text) {
-                    viewModel.changeFirstTextField(text);
-                  },
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    border: InputBorder.none,
-                    hintText: '금액을 입력하세요',
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: 150,
-                height: 55,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.black45,
-                  ),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('검색창'),
-                          content: SizedBox(
-                            width: double.maxFinite,
-                            height: 400,
-                            child: ListView.builder(
-                              itemCount: state.conversionRates.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final conversionRate =
-                                    state.conversionRates[index];
-
-                                return Column(
-                                  children: [
-                                    const Divider(
-                                      height: 1,
-                                      thickness: 1,
-                                    ),
-                                    InkWell(
-                                      splashColor: Colors.black38,
-                                      onTap: () {
-                                        viewModel.setNation2(conversionRate);
-                                        Navigator.pop(context);
-                                      },
-                                      child: ListTile(
-                                        title: Text(conversionRate.nation),
-                                        trailing:
-                                            Text('${conversionRate.rate}'),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    foregroundColor: Colors.black87,
-                    backgroundColor: Colors.white,
-                    elevation: 0.0,
-                  ),
-                  child: Text(
-                    state.secondButtonConversionRate.nation,
-                    style: const TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                width: 200,
-                height: 55,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
-                    color: Colors.black45,
-                  ),
-                ),
-                child: TextFormField(
-                  focusNode: _focusNode2,
-                  style: const TextStyle(fontSize: 20),
-                  controller: _controller2,
-                  keyboardType: TextInputType.number,
-                  onChanged: (text) {
-                    viewModel.changeSecondTextField(text);
-                  },
-                  decoration: const InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    border: InputBorder.none,
-                    hintText: '금액을 입력하세요',
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 28.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text('2023년 3월 17일 기준 환율'),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: [
-                        Text('1 ${state.firstButtonConversionRate.nation}'),
-                        Text(' = ${viewModel.pairConversion}'.substring(0, 8)),
-                        Text(' ${state.secondButtonConversionRate.nation}'),
-                      ],
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
