@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
@@ -290,8 +292,9 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('1 ${state.firstButtonConversionRate.nation}'),
-                      Text(' = ${viewModel.pairConversion}'),
+                      Text('1 ${state.firstButtonConversionRate.nation} = '),
+                      Text('${viewModel.pairConversion}'.substring(0,
+                          min(7, viewModel.pairConversion.toString().length))),
                       Text(' ${state.secondButtonConversionRate.nation}'),
                     ],
                   ),
@@ -304,7 +307,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
     );
   }
 
-  AlertDialog _buildAlertDialog(CurrencyViewModel viewModel) {
+  Widget _buildAlertDialog(CurrencyViewModel viewModel) {
     return AlertDialog(
       title: TextField(
         style: const TextStyle(
