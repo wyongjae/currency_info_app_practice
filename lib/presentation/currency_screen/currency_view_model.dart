@@ -17,7 +17,7 @@ class CurrencyViewModel with ChangeNotifier {
               ))
           .toList();
 
-  List<ConversionRate> searchNations = [];
+  List<ConversionRate> searchResult = [];
 
   CurrencyState _state = CurrencyState(
     firstButtonConversionRate: ConversionRate(),
@@ -121,22 +121,18 @@ class CurrencyViewModel with ChangeNotifier {
   }
 
   void searchNation(String text) {
-    List<ConversionRate> result = [];
-
     if (text.isEmpty) {
-      result = conversionRates;
-      searchNations = result;
+      searchResult = conversionRates;
       notifyListeners();
     } else if (text.isNotEmpty) {
-      result = conversionRates
+      searchResult = conversionRates
           .where((e) =>
               e.nation.contains(text.toUpperCase()) ||
               e.nation.contains(text.toLowerCase()))
           .toList();
       notifyListeners();
     }
-    _eventStreamController.add(CurrencyUiEvent.searchNation(result));
-    searchNations = result;
+    _eventStreamController.add(CurrencyUiEvent.searchNation(searchResult));
     notifyListeners();
   }
 }
