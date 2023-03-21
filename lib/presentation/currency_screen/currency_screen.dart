@@ -1,3 +1,4 @@
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -29,15 +31,15 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           changeSecondMoney: (money) {
             _controller2.text = money.toString();
           },
+          searchNation: (List<ConversionRate> conversionRate) {
+            viewModel.searchNations = conversionRate.toList();
+          },
         );
       });
 
-      // 변경된 값을 실시간으로 알려주기 위해 작성했으나 용도가 틀린 것 같음
       _searchController.addListener(() {
-        return viewModel.searchNation(_searchController.text);
+        _searchText = _searchController.text;
       });
-
-      viewModel.foundNation = viewModel.state.conversionRates;
     });
   }
 
@@ -129,49 +131,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: TextField(
-                              controller: _searchController,
-                              decoration: const InputDecoration(
-                                hintText: '검색어를 입력하세요',
-                              ),
-                              onChanged: (text) {
-                                viewModel.searchNation(text);
-                              },
-                            ),
-                            content: SizedBox(
-                              width: double.maxFinite,
-                              height: 400,
-                              child: ListView.builder(
-                                itemCount: viewModel.foundNation.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final conversionRate =
-                                      viewModel.foundNation[index];
-
-                                  return Column(
-                                    children: [
-                                      const Divider(
-                                        height: 1,
-                                        thickness: 1,
-                                      ),
-                                      InkWell(
-                                        splashColor: Colors.black38,
-                                        onTap: () {
-                                          viewModel.setNation(conversionRate);
-                                          Navigator.pop(context);
-                                        },
-                                        child: ListTile(
-                                          title: Text(conversionRate.nation),
-                                          trailing:
-                                              Text('${conversionRate.rate}'),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          );
+                          return _buildAlertDialog(viewModel);
                         },
                       );
                     },
@@ -339,6 +299,53 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  AlertDialog _buildAlertDialog(CurrencyViewModel viewModel) {
+    return AlertDialog(
+      title: TextField(
+        style: const TextStyle(
+          fontSize: 18,
+        ),
+        controller: _searchController,
+        decoration: const InputDecoration(
+          hintText: '검색어를 입력하세요',
+        ),
+        onChanged: (text) {
+          viewModel.searchNation(_searchText);
+        },
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        height: 400,
+        child: ListView.builder(
+          itemCount: viewModel.searchNations.length,
+          itemBuilder: (BuildContext context, int index) {
+            final searchNation = viewModel.searchNations[index];
+
+            return Column(
+              children: [
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                ),
+                InkWell(
+                  splashColor: Colors.black38,
+                  onTap: () {
+                    viewModel.setNation(searchNation);
+                    Navigator.pop(context);
+                  },
+                  child: ListTile(
+                    title: Text(searchNation.nation),
+                    trailing: Text('${searchNation.rate}'),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
