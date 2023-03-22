@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:currency_info_app_prac/domain/use_case/get_currency_use_case.dart';
 import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
@@ -8,14 +9,6 @@ import 'package:flutter/material.dart';
 
 class CurrencyViewModel with ChangeNotifier {
   final GetCurrencyUseCase getCurrencyUseCase;
-
-  List<ConversionRate> get conversionRates =>
-      state.currency!.conversionRates.entries
-          .map((e) => ConversionRate(
-                nation: e.key,
-                rate: e.value,
-              ))
-          .toList();
 
   List<ConversionRate> searchResult = [];
 
@@ -30,8 +23,14 @@ class CurrencyViewModel with ChangeNotifier {
 
   String get timeNextUpdateUtc => _state.currency?.timeNextUpdateUtc ?? '';
 
-  num get pairConversion => (state.secondButtonConversionRate.rate /
-      state.firstButtonConversionRate.rate);
+  String get pairConversion {
+    num pairConversionRate = (state.secondButtonConversionRate.rate /
+        state.firstButtonConversionRate.rate);
+
+    return pairConversionRate
+        .toString()
+        .substring(0, min(7, pairConversionRate.toString().length));
+  }
 
   final _eventStreamController = StreamController<CurrencyUiEvent>();
 
@@ -68,6 +67,7 @@ class CurrencyViewModel with ChangeNotifier {
       secondFieldMoney: state.firstFieldMoney *
           (state.secondButtonConversionRate.rate / conversionRate.rate),
     );
+    searchResult = state.conversionRates;
     notifyListeners();
 
     _eventStreamController
@@ -80,6 +80,7 @@ class CurrencyViewModel with ChangeNotifier {
       secondFieldMoney: state.firstFieldMoney *
           (conversionRate.rate / state.firstButtonConversionRate.rate),
     );
+    searchResult = state.conversionRates;
     notifyListeners();
 
     _eventStreamController
@@ -122,17 +123,12 @@ class CurrencyViewModel with ChangeNotifier {
 
   void searchNation(String text) {
     if (text.isEmpty) {
-      searchResult = conversionRates;
-      notifyListeners();
-    } else if (text.isNotEmpty) {
-      searchResult = conversionRates
-          .where((e) =>
-              e.nation.contains(text.toUpperCase()) ||
-              e.nation.contains(text.toLowerCase()))
+      searchResult = state.conversionRates;
+    } else {
+      searchResult = state.conversionRates
+          .where((e) => e.nation.contains(text.toUpperCase()))
           .toList();
-      notifyListeners();
     }
-    _eventStreamController.add(CurrencyUiEvent.searchNation(searchResult));
     notifyListeners();
   }
 }
