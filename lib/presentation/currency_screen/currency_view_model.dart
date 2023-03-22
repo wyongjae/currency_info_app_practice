@@ -2,10 +2,25 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:currency_info_app_prac/domain/use_case/get_currency_use_case.dart';
-import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_state.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_ui_event.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'currency_view_model.freezed.dart';
+
+part 'currency_view_model.g.dart';
+
+@freezed
+class ConversionRate with _$ConversionRate {
+  factory ConversionRate({
+    @Default('KRW') String nation,
+    @Default(1) num rate,
+  }) = _ConversionRate;
+
+  factory ConversionRate.fromJson(Map<String, dynamic> json) =>
+      _$ConversionRateFromJson(json);
+}
 
 class CurrencyViewModel with ChangeNotifier {
   final GetCurrencyUseCase getCurrencyUseCase;

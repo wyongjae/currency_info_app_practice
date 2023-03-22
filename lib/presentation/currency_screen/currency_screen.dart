@@ -1,4 +1,3 @@
-import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
