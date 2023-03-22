@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class CurrencyViewModel with ChangeNotifier {
   final GetCurrencyUseCase getCurrencyUseCase;
 
-  List<ConversionRate> searchResult = [];
+  List<ConversionRate> searchNations = [];
 
   CurrencyState _state = CurrencyState(
     firstButtonConversionRate: ConversionRate(),
@@ -67,7 +67,7 @@ class CurrencyViewModel with ChangeNotifier {
       secondFieldMoney: state.firstFieldMoney *
           (state.secondButtonConversionRate.rate / conversionRate.rate),
     );
-    searchResult = state.conversionRates;
+    searchNations = state.conversionRates;
     notifyListeners();
 
     _eventStreamController
@@ -80,7 +80,7 @@ class CurrencyViewModel with ChangeNotifier {
       secondFieldMoney: state.firstFieldMoney *
           (conversionRate.rate / state.firstButtonConversionRate.rate),
     );
-    searchResult = state.conversionRates;
+    searchNations = state.conversionRates;
     notifyListeners();
 
     _eventStreamController
@@ -123,9 +123,9 @@ class CurrencyViewModel with ChangeNotifier {
 
   void searchNation(String text) {
     if (text.isEmpty) {
-      searchResult = state.conversionRates;
+      searchNations = state.conversionRates;
     } else {
-      searchResult = state.conversionRates
+      searchNations = state.conversionRates
           .where((e) => e.nation.contains(text.toUpperCase()))
           .toList();
     }

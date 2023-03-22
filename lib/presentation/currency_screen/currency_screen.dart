@@ -1,3 +1,4 @@
+import 'package:currency_info_app_prac/presentation/currency_add_screen/currency_add_view_model.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           },
         );
       });
-      viewModel.searchResult = viewModel.state.conversionRates;
+      viewModel.searchNations = viewModel.state.conversionRates;
     });
   }
 
@@ -118,7 +119,11 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const _FirstCurrencyDialog();
+                          return _CurrencyDialog(
+                            callBack: (ConversionRate searchNation) {
+                              viewModel.setNation(searchNation);
+                            },
+                          );
                         },
                       );
                     },
@@ -183,7 +188,11 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const _SecondCurrencyDialog();
+                          return _CurrencyDialog(
+                            callBack: (ConversionRate searchNation) {
+                              viewModel.setNation2(searchNation);
+                            },
+                          );
                         },
                       );
                     },
@@ -258,8 +267,13 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   }
 }
 
-class _FirstCurrencyDialog extends StatelessWidget {
-  const _FirstCurrencyDialog();
+class _CurrencyDialog extends StatelessWidget {
+  final void Function(ConversionRate searchNation) callBack;
+
+  const _CurrencyDialog({
+    Key? key,
+    required this.callBack,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -281,9 +295,9 @@ class _FirstCurrencyDialog extends StatelessWidget {
         width: double.maxFinite,
         height: 400,
         child: ListView.builder(
-          itemCount: viewModel.searchResult.length,
+          itemCount: viewModel.searchNations.length,
           itemBuilder: (BuildContext context, int index) {
-            final searchNation = viewModel.searchResult[index];
+            final searchNation = viewModel.searchNations[index];
 
             return Column(
               children: [
@@ -294,61 +308,7 @@ class _FirstCurrencyDialog extends StatelessWidget {
                 InkWell(
                   splashColor: Colors.black38,
                   onTap: () {
-                    viewModel.setNation(searchNation);
-
-                    Navigator.pop(context);
-                  },
-                  child: ListTile(
-                    title: Text(searchNation.nation),
-                    trailing: Text('${searchNation.rate}'),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _SecondCurrencyDialog extends StatelessWidget {
-  const _SecondCurrencyDialog();
-
-  @override
-  Widget build(BuildContext context) {
-    final viewModel = context.watch<CurrencyViewModel>();
-
-    return AlertDialog(
-      title: TextField(
-        style: const TextStyle(
-          fontSize: 18,
-        ),
-        decoration: const InputDecoration(
-          hintText: '검색어를 입력하세요',
-        ),
-        onChanged: (text) {
-          viewModel.searchNation(text);
-        },
-      ),
-      content: SizedBox(
-        width: double.maxFinite,
-        height: 400,
-        child: ListView.builder(
-          itemCount: viewModel.searchResult.length,
-          itemBuilder: (BuildContext context, int index) {
-            final searchNation = viewModel.searchResult[index];
-
-            return Column(
-              children: [
-                const Divider(
-                  height: 1,
-                  thickness: 1,
-                ),
-                InkWell(
-                  splashColor: Colors.black38,
-                  onTap: () {
-                    viewModel.setNation2(searchNation);
+                    callBack(searchNation);
 
                     Navigator.pop(context);
                   },
