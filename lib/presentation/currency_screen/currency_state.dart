@@ -1,5 +1,5 @@
 import 'package:currency_info_app_prac/domain/model/currency.dart';
-import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
+import 'package:currency_info_app_prac/presentation/currency_screen/conversion_rate.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'currency_state.freezed.dart';
