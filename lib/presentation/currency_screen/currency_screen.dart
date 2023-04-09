@@ -1,6 +1,7 @@
 import 'package:currency_info_app_prac/presentation/currency_screen/conversion_rate.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CurrencyScreen extends StatefulWidget {
@@ -54,6 +55,14 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         backgroundColor: Colors.black54,
         title: const Text('환율 계산기'),
         elevation: 1,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push('/test');
+            },
+            icon: const Icon(Icons.settings),
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
