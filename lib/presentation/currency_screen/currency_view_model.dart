@@ -41,7 +41,7 @@ class CurrencyViewModel with ChangeNotifier {
   }
 
   Future<void> fetch() async {
-    final result = await getCurrencyUseCase();
+    final result = await getCurrencyUseCase.execute();
 
     result.when(
       success: (currency) {

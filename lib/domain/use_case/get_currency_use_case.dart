@@ -7,16 +7,12 @@ class GetCurrencyUseCase {
 
   GetCurrencyUseCase(this.repository);
 
-  Future<Result<Currency>> call() async {
-    final result = await repository.getData();
-
-    return result.when(
-      success: (currency) {
-        return Result.success(currency);
-      },
-      error: (message) {
-        return Result.error(message);
-      },
-    );
+  Future<Result<Currency>> execute() async {
+    final currency = await repository.getData();
+    try {
+      return Result.success(currency);
+    } catch (e) {
+      return const Result.error('네트워크 에러');
+    }
   }
 }
