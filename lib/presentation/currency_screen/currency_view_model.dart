@@ -57,6 +57,7 @@ class CurrencyViewModel with ChangeNotifier {
       },
       error: (message) {},
     );
+    searchNations = state.conversionRates;
 
     notifyListeners();
   }

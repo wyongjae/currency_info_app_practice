@@ -33,7 +33,6 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
           },
         );
       });
-      viewModel.searchNations = viewModel.state.conversionRates;
     });
   }
 
@@ -128,10 +127,15 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return _CurrencyDialog(
-                            callBack: (ConversionRate searchNation) {
+                          return CurrencyDialog(
+                            onSearchNationSelect:
+                                (ConversionRate searchNation) {
                               viewModel.setNation(searchNation);
                             },
+                            onChanged: (String query) {
+                              viewModel.searchNation(query);
+                            },
+                            searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -197,10 +201,15 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return _CurrencyDialog(
-                            callBack: (ConversionRate searchNation) {
+                          return CurrencyDialog(
+                            onSearchNationSelect:
+                                (ConversionRate searchNation) {
                               viewModel.setNation2(searchNation);
                             },
+                            onChanged: (String query) {
+                              viewModel.searchNation(query);
+                            },
+                            searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -276,18 +285,20 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   }
 }
 
-class _CurrencyDialog extends StatelessWidget {
-  final void Function(ConversionRate searchNation) callBack;
+class CurrencyDialog extends StatelessWidget {
+  final void Function(ConversionRate searchNation) onSearchNationSelect;
+  final void Function(String query) onChanged;
+  final List<ConversionRate> searchNations;
 
-  const _CurrencyDialog({
+  const CurrencyDialog({
     Key? key,
-    required this.callBack,
+    required this.onSearchNationSelect,
+    required this.onChanged,
+    required this.searchNations,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<CurrencyViewModel>();
-
     return AlertDialog(
       title: TextField(
         style: const TextStyle(
@@ -297,16 +308,16 @@ class _CurrencyDialog extends StatelessWidget {
           hintText: '검색어를 입력하세요',
         ),
         onChanged: (text) {
-          viewModel.searchNation(text);
+          onChanged(text);
         },
       ),
       content: SizedBox(
         width: double.maxFinite,
         height: 400,
         child: ListView.builder(
-          itemCount: viewModel.searchNations.length,
+          itemCount: searchNations.length,
           itemBuilder: (BuildContext context, int index) {
-            final searchNation = viewModel.searchNations[index];
+            final searchNation = searchNations[index];
 
             return Column(
               children: [
@@ -317,7 +328,7 @@ class _CurrencyDialog extends StatelessWidget {
                 InkWell(
                   splashColor: Colors.black38,
                   onTap: () {
-                    callBack(searchNation);
+                    onSearchNationSelect(searchNation);
 
                     Navigator.pop(context);
                   },
