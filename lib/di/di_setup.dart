@@ -12,7 +12,6 @@ void diSetup() {
   getIt.registerLazySingleton<CurrencyRepository>(
       () => CurrencyRepositoryImpl(getIt<CurrencyApi>()));
 
-  // 여기서 registerLazySingleton 뒤에 제네릭은 필요 없는 건지 ??
   getIt.registerLazySingleton<GetCurrencyUseCase>(
       () => GetCurrencyUseCase(getIt<CurrencyRepository>()));
 }
