@@ -1,3 +1,4 @@
+import 'package:currency_info_app_prac/di/di_setup.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/conversion_rate.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
@@ -132,10 +133,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                 (ConversionRate searchNation) {
                               viewModel.setNation(searchNation);
                             },
-                            onChanged: (String query) {
-                              viewModel.searchNation(query);
-                            },
-                            searchNations: viewModel.searchNations,
+                            // onChanged: (String query) {
+                            //   viewModel.searchNation(query);
+                            // },
+                            // searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -206,10 +207,10 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                 (ConversionRate searchNation) {
                               viewModel.setNation2(searchNation);
                             },
-                            onChanged: (String query) {
-                              viewModel.searchNation(query);
-                            },
-                            searchNations: viewModel.searchNations,
+                            // onChanged: (String query) {
+                            //   viewModel.searchNation(query);
+                            // },
+                            // searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -287,18 +288,20 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
 
 class CurrencyDialog extends StatelessWidget {
   final void Function(ConversionRate searchNation) onSearchNationSelect;
-  final void Function(String query) onChanged;
-  final List<ConversionRate> searchNations;
+  // final void Function(String query) onChanged;
+  // final List<ConversionRate> searchNations;
 
   const CurrencyDialog({
     Key? key,
     required this.onSearchNationSelect,
-    required this.onChanged,
-    required this.searchNations,
+    // required this.onChanged,
+    // required this.searchNations,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = getIt<CurrencyViewModel>();
+
     return AlertDialog(
       title: TextField(
         style: const TextStyle(
@@ -308,16 +311,16 @@ class CurrencyDialog extends StatelessWidget {
           hintText: '검색어를 입력하세요',
         ),
         onChanged: (text) {
-          onChanged(text);
+          viewModel.searchNation(text);
         },
       ),
       content: SizedBox(
         width: double.maxFinite,
         height: 400,
         child: ListView.builder(
-          itemCount: searchNations.length,
+          itemCount: viewModel.searchNations.length,
           itemBuilder: (BuildContext context, int index) {
-            final searchNation = searchNations[index];
+            final searchNation = viewModel.searchNations[index];
 
             return Column(
               children: [
