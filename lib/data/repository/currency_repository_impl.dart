@@ -13,8 +13,8 @@ class CurrencyRepositoryImpl implements CurrencyRepository {
   Future<Currency> getData() async {
     final response = await api.fetch();
 
-    // Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    Currency currency = Currency.fromJson(response);
+    Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+    Currency currency = Currency.fromJson(jsonResponse);
 
     return currency;
   }

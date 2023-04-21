@@ -1,8 +1,6 @@
-import 'package:currency_info_app_prac/di/di_setup.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/conversion_rate.dart';
 import 'package:currency_info_app_prac/presentation/currency_screen/currency_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CurrencyScreen extends StatefulWidget {
@@ -57,9 +55,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
         elevation: 1,
         actions: [
           IconButton(
-            onPressed: () {
-              context.push('/test');
-            },
+            onPressed: () {},
             icon: const Icon(Icons.settings),
           )
         ],
@@ -133,10 +129,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                 (ConversionRate searchNation) {
                               viewModel.setNation(searchNation);
                             },
-                            // onChanged: (String query) {
-                            //   viewModel.searchNation(query);
-                            // },
-                            // searchNations: viewModel.searchNations,
+                            searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -207,10 +200,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                                 (ConversionRate searchNation) {
                               viewModel.setNation2(searchNation);
                             },
-                            // onChanged: (String query) {
-                            //   viewModel.searchNation(query);
-                            // },
-                            // searchNations: viewModel.searchNations,
+                            searchNations: viewModel.searchNations,
                           );
                         },
                       );
@@ -286,22 +276,31 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
   }
 }
 
-class CurrencyDialog extends StatelessWidget {
+class CurrencyDialog extends StatefulWidget {
   final void Function(ConversionRate searchNation) onSearchNationSelect;
-  // final void Function(String query) onChanged;
-  // final List<ConversionRate> searchNations;
+  final List<ConversionRate> searchNations;
 
   const CurrencyDialog({
     Key? key,
     required this.onSearchNationSelect,
-    // required this.onChanged,
-    // required this.searchNations,
+    required this.searchNations,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final viewModel = getIt<CurrencyViewModel>();
+  State<CurrencyDialog> createState() => _CurrencyDialogState();
+}
 
+class _CurrencyDialogState extends State<CurrencyDialog> {
+  List<ConversionRate> filteredNations = [];
+
+  @override
+  void initState() {
+    super.initState();
+    filteredNations = widget.searchNations;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: TextField(
         style: const TextStyle(
@@ -311,16 +310,24 @@ class CurrencyDialog extends StatelessWidget {
           hintText: '검색어를 입력하세요',
         ),
         onChanged: (text) {
-          viewModel.searchNation(text);
+          setState(() {
+            if (text.isEmpty) {
+              filteredNations = widget.searchNations;
+            } else {
+              filteredNations = widget.searchNations
+                  .where((e) => e.nation.contains(text.toUpperCase()))
+                  .toList();
+            }
+          });
         },
       ),
       content: SizedBox(
         width: double.maxFinite,
         height: 400,
         child: ListView.builder(
-          itemCount: viewModel.searchNations.length,
+          itemCount: filteredNations.length,
           itemBuilder: (BuildContext context, int index) {
-            final searchNation = viewModel.searchNations[index];
+            final filteredNation = filteredNations[index];
 
             return Column(
               children: [
@@ -331,13 +338,13 @@ class CurrencyDialog extends StatelessWidget {
                 InkWell(
                   splashColor: Colors.black38,
                   onTap: () {
-                    onSearchNationSelect(searchNation);
+                    widget.onSearchNationSelect(filteredNation);
 
                     Navigator.pop(context);
                   },
                   child: ListTile(
-                    title: Text(searchNation.nation),
-                    trailing: Text('${searchNation.rate}'),
+                    title: Text(filteredNation.nation),
+                    trailing: Text('${filteredNation.rate}'),
                   ),
                 ),
               ],

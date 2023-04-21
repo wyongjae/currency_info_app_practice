@@ -16,6 +16,5 @@ void diSetup() {
   getIt.registerLazySingleton<GetCurrencyUseCase>(
       () => GetCurrencyUseCase(getIt<CurrencyRepository>()));
 
-  getIt.registerLazySingleton(() => CurrencyViewModel(getIt<GetCurrencyUseCase>()));
-
+  getIt.registerFactory(() => CurrencyViewModel(getIt<GetCurrencyUseCase>()));
 }
